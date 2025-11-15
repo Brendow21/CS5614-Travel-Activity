@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Travel DBMS Project</title>
+</head>
+<body>
+    <h1>All Trips</h1>
+    <ul>
+    {% for trip in trips %}
+        <li>{{ trip.user.name }}: {{ trip.destination }} ({{ trip.start_date }} - {{ trip.end_date }})</li>
+    {% empty %}
+        <li>No trips available.</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
