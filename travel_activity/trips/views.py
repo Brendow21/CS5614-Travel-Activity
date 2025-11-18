@@ -4,5 +4,4 @@ from django.shortcuts import render
 from .models import Trip
 
 def home(request):
-    trips = Trip.objects.all()
-    return render(request, 'index.html', {'trips': trips})
+    return render(request, 'home.html')

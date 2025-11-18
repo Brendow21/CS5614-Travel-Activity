@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from trips.views import home
 # Import the views module from the trips app
 from trips import views
 

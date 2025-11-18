@@ -1,0 +1,23 @@
+{% extends "common.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles.css' %}">
+<link rel="stylesheet" href="{% static 'home.css' %}">
+
+<div class="container">
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Discover Your Next Adventure</h1>
+    <p>Fin personalized travel activitiy reccomenedations based on your 
+        preferences, budget, and thousands of verified reviews from real travelers.</p>
+
+    <!-- Search -->
+    <form action="/trips/search/" method="get" class="search-form">
+      <input type="text" name="q" placeholder="Search by location, activity, or date..." class="search-input">
+      <button type="submit" class="search-btn">Search</button>
+    </form>
+  </section>
+
+</div>
+{% endblock %}
