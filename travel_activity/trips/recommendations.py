@@ -1,0 +1,81 @@
+from django.db.models import Q, Avg
+from .models import Activity, Review, User
+
+class RecommendationEngine:
+    """Generate personalized activity recommendations"""
+    
+    @staticmethod
+    def filter_activities(preferences):
+        """
+        Filter activities based on user preferences
+        """
+        activities = Activity.objects.all()
+        
+        if preferences.get('min_price'):
+            activities = activities.filter(cost__gte=preferences['min_price'])
+        
+        if preferences.get('max_price'):
+            activities = activities.filter(cost__lte=preferences['max_price'])
+        
+        if preferences.get('category'):
+            activities = activities.filter(category__icontains=preferences['category'])
+        
+        if preferences.get('duration'):
+            duration_map = {
+                'quick': (0, 120),
+                'half-day': (120, 240),
+                'full-day': (240, 480),
+                'multi-day': (480, 100000)
+            }
+            if preferences['duration'] in duration_map:
+                min_dur, max_dur = duration_map[preferences['duration']]
+                activities = activities.filter(
+                    duration__gte=min_dur,
+                    duration__lte=max_dur
+                )
+        
+        if preferences.get('min_rating'):
+            activities = activities.filter(rating__gte=preferences['min_rating'])
+        
+        if preferences.get('location'):
+            activities = activities.filter(location__icontains=preferences['location'])
+        
+        return activities.order_by('-rating', 'cost')
+    
+    @staticmethod
+    def generate_recommendations(user, limit=10):
+        """Generate personalized recommendations for a user"""
+        user_liked_categories = Review.objects.filter(
+            user=user,
+            rating__gte=4.0
+        ).values_list('activity__category', flat=True).distinct()
+        
+        recommendations = Activity.objects.filter(
+            category__in=user_liked_categories
+        ).exclude(
+            reviews__user=user
+        ).order_by('-rating')[:limit]
+        
+        return recommendations
+    
+    @staticmethod
+    def calculate_recommendation_score(user, activity):
+        """Calculate a recommendation score (0-100)"""
+        score = 50.0
+        
+        user_reviews = Review.objects.filter(user=user, rating__gte=4.0)
+        liked_categories = [r.activity.category for r in user_reviews]
+        
+        if activity.category in liked_categories:
+            score += 20
+        
+        if activity.rating:
+            score += float(activity.rating) * 5
+        
+        review_count = activity.reviews.count()
+        if review_count > 10:
+            score += 10
+        elif review_count > 5:
+            score += 5
+        
+        return min(score, 100)
