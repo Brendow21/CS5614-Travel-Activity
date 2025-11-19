@@ -15,12 +15,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from trips.views import home
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 # Import the views module from the trips app
 from trips import views
+from trips.views import ActivityViewSet, generate_recommendations, user_saved_activities
+
+router = DefaultRouter()
+router.register(r'activities', ActivityViewSet, basename='activity')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    
+    # API routes
+    path('api/', include(router.urls)),
+    path('api/recommendations/generate/', generate_recommendations, name='generate-recommendations'),
+    path('api/users/<int:user_id>/saved/', user_saved_activities, name='user-saved-activities'),
 ]
