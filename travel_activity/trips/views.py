@@ -1,15 +1,20 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.views.decorators.http import require_POST
 from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from .models import Activity, Review, Recommendation, SavedActivity, User, Trip
 from .serializers import ActivitySerializer, RecommendationSerializer, SavedActivitySerializer
 from .recommendations import RecommendationEngine
+from .forms import CustomUserCreationForm
 
 
 def home(request):
     return render(request, 'home.html')
-
 
 class ActivityViewSet(viewsets.ModelViewSet):
     """API endpoints for activities"""
@@ -142,3 +147,45 @@ def user_saved_activities(request, user_id):
         'saved_count': saved.count(),
         'saved_activities': serializer.data
     })
+
+def search_view(request):
+    """
+    Display the search page for Travel Activity.
+    """
+    return render(request, 'search.html')
+
+@login_required
+def profile_view(request):
+    """
+    Display the profile page for the logged-in user."""
+    return render(request, 'account/profile.html', {
+        'user': request.user
+    })
+
+def register_view(request):
+    """
+    Handle user registration."""
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'account/register.html', {'form': form})
+
+@require_POST
+def logout_view(request):
+    """
+    Logs out the user via POST request and redirects to home.
+    """
+    logout(request)
+    return redirect('home')
+
+@login_required(login_url='login')
+def saved_view(request):
+    """
+    Display the saved trips for the logged-in user.
+    """
+    saved_trips = request.user.saved_trips.all()
+    return render(request, 'saved.html', {'saved_trips': saved_trips})

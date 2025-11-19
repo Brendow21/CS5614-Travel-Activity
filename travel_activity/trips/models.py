@@ -1,11 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-class User(models.Model):
-    name = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
+class User(AbstractUser):
+    """
+    Extend Django's AbstractUser to add extra fields if needed.
+    username, email, password are already included in AbstractUser.
+    """
+    pass
 
-    def __str__(self):
-        return self.name
 
 class Trip(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

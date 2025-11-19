@@ -1,0 +1,239 @@
+/* General page layout */
+.page-container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    margin-top: 25px;
+    box-sizing: border-box;
+}
+
+/* Left Sidebar (Filter) */
+.sidebar {
+    width: 280px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding-top: 90px
+}
+
+/* Section structure */
+.section {
+    margin-bottom: 20px;
+}
+
+.section label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Filter Layout */
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+/* Buttons inside filter */
+.section button {
+    padding: 8px 10px;
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.section button:hover {
+    background: #e9e9e9;
+}
+
+/* Price inputs */
+.section input[type="number"] {
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+/* Action buttons */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.clear,
+.apply {
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+}
+
+.clear {
+    background: #eee;
+}
+
+.apply {
+    background: #2d6cdf;
+    color: white;
+}
+
+.apply:hover {
+    background: #1f4fb7;
+}
+
+
+/* Min-Max Price */
+.two-input {
+    display: flex;
+    gap: 10px;
+}
+
+.two-input input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+/* Option buttons */
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.options button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    background: #eee;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background 0.2s ease;
+}
+
+.options button:hover {
+    background: #dcdcdc;
+}
+
+/* Filter Action Buttons */
+.action-buttons {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.clear {
+    background: #ccc;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.apply {
+    background: #0077ff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.apply:hover {
+    background: #005fcc;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 22%; 
+    margin-right: 22%;
+    width: 56%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Search Bar */
+.search-bar-container {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 650px;
+    margin-bottom: 25px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.search-input:focus {
+    border-color: #0077ff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 119, 255, 0.3);
+}
+
+.search-btn {
+    padding: 12px 20px;
+    background: #0077ff;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.search-btn:hover {
+    background: #005fcc;
+}
+
+/* Activity Cards */
+.activity-card {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.activity-card:hover {
+    background: #f2f2f2;
+}
+
+/* Right Sidebar */
+.recommended-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 20%;
+    min-width: 250px;
+    height: 100vh;
+    background-color: #f7f7f7;
+    border-left: 1px solid #ddd;
+    padding: 25px;
+    overflow-y: auto;
+    padding-top: 90px
+}
+
+.recommended-panel h2 {
+    margin-bottom: 15px;
+}

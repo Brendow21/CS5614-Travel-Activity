@@ -1,23 +1,34 @@
-{% extends "common.html" %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'styles.css' %}">
-<link rel="stylesheet" href="{% static 'home.css' %}">
+<link rel="stylesheet" href="{% static 'landing.css' %}">
 
-<div class="container">
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>Discover Your Next Adventure</h1>
-    <p>Fin personalized travel activitiy reccomenedations based on your 
-        preferences, budget, and thousands of verified reviews from real travelers.</p>
+<div class="landing-container">
 
-    <!-- Search -->
-    <form action="/trips/search/" method="get" class="search-form">
-      <input type="text" name="q" placeholder="Search by location, activity, or date..." class="search-input">
-      <button type="submit" class="search-btn">Search</button>
-    </form>
-  </section>
+    <!-- Hero Section -->
+    <header class="landing-header">
+        <h1>Welcome to Travel Activity System</h1>
+        <p>Discover curated travel activities tailored to your preferences, budget, and reviews. 
+           Our platform helps you find the best tours, restaurants, museums, and outdoor activities—simplifying the search for memorable experiences.</p>
+        <a href="{% url 'search' %}" class="btn-primary">Explore Activities</a>
+    </header>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="feature">
+            <h2>Personalized Recommendations</h2>
+            <p>Receive activity suggestions based on your interests, budget, travel duration, and historical reviews, making planning effortless.</p>
+        </div>
+        <div class="feature">
+            <h2>Comprehensive Activity Data</h2>
+            <p>Access detailed information including cost, duration, location, accessibility options, and review highlights for tours, restaurants, museums, and outdoor activities.</p>
+        </div>
+        <div class="feature">
+            <h2>Smart Filtering & Context Awareness</h2>
+            <p>Filter activities by accessibility, family-friendliness, or language options, and get context-aware suggestions based on time, season, and even weather trends.</p>
+        </div>
+    </section>
 
 </div>
 {% endblock %}

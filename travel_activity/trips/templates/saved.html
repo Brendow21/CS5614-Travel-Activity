@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'saved_activities.css' %}">
+
+<div class="saved-container">
+    <h1>{{ user.name }}'s Saved Activities</h1>
+
+    {% if saved_activities %}
+        <div class="activities-grid">
+            {% for saved in saved_activities %}
+                <div class="activity-card">
+                    <h2>{{ saved.activity.title }}</h2>
+                    <p><strong>Category:</strong> {{ saved.activity.category }}</p>
+                    <p><strong>Location:</strong> {{ saved.activity.location }}</p>
+                    <p><strong>Cost:</strong> ${{ saved.activity.cost }}</p>
+                    {% if saved.activity.rating %}
+                        <p><strong>Rating:</strong> {{ saved.activity.rating }}/5</p>
+                    {% endif %}
+                    <p><strong>Saved At:</strong> {{ saved.saved_at|date:"M d, Y H:i" }}</p>
+                    <p>{{ saved.activity.description|truncatechars:100 }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You have not saved any activities yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

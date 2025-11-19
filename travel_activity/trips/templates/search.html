@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'search.css' %}">
+
+<div class="page-container">
+
+    <!-- Left Sidebar (Filter) -->
+    <aside class="sidebar">
+        <h2>Filter</h2>
+
+        <!-- Price Range -->
+        <div class="section">
+            <label>Price Range</label>
+            <div class="two-col">
+                <input type="number" placeholder="Min Price">
+                <input type="number" placeholder="Max Price">
+            </div>
+        </div>
+
+        <!-- Duration -->
+        <div class="section">
+            <label>Duration</label>
+            <div class="two-col">
+                <button>Quick (&lt; 2 hours)</button>
+                <button>Half-day (2–4 hours)</button>
+                <button>Full-day (4–8 hours)</button>
+                <button>Multi-day (8+ hours)</button>
+            </div>
+        </div>
+
+        <!-- Category -->
+        <div class="section">
+            <label>Category</label>
+            <div class="two-col">
+                <button>🍽 Restaurant</button>
+                <button>🏛 Museum</button>
+                <button>🏞 Outdoors</button>
+                <button>🎫 Tours</button>
+            </div>
+        </div>
+
+        <!-- Rating -->
+        <div class="section">
+            <label>Minimum Rating</label>
+            <div class="two-col">
+                <button>✨ 3.5+</button>
+                <button>✨ 4+</button>
+                <button>✨ 4.5+</button>
+            </div>
+        </div>
+
+        <!-- Accessibility -->
+        <div class="section">
+            <label>Accessibility</label>
+            <div class="two-col">
+                <button>🦽 Wheelchair Accessible</button>
+                <button>🐕 Pet-Friendly</button>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="clear">Clear All</button>
+            <button class="apply">Apply Filters</button>
+        </div>
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Search Bar -->
+        <div class="search-bar-container">
+            <input type="text" class="search-input" placeholder="Search destinations, activities...">
+            <button class="search-btn">Search</button>
+        </div>
+
+        <h2 class="section-title">Search Results</h2>
+
+        <div class="activity-card">
+            <h3>Example Activity</h3>
+            <p>This is a placeholder for search results.</p>
+        </div>
+
+        <div class="activity-card">
+            <h3>Another Activity</h3>
+            <p>More example content goes here.</p>
+        </div>
+
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside class="recommended-panel">
+        <h2>Recommended</h2>
+
+        <div class="activity-card">
+            <h3>City Walking Tour</h3>
+            <p>Explore historic streets.</p>
+        </div>
+
+        <div class="activity-card">
+            <h3>Local Food Experience</h3>
+            <p>Try signature local dishes.</p>
+        </div>
+
+    </aside>
+
+</div>
+
+{% endblock %}

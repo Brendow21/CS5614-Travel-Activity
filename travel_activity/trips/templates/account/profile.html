@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'profile.css' %}">
+
+<div class="profile-container">
+    <h1>Welcome, {{ user.username }}!</h1>
+
+    <div class="profile-info">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+    </div>
+
+    <form id="logout-form" method="POST" action="{% url 'logout' %}" style="display:none;">
+        {% csrf_token %}
+    </form>
+
+    <button onclick="document.getElementById('logout-form').submit();">Logout</button>
+</div>
+
+{% endblock %}
