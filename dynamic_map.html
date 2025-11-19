@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Travel Activities Map</title>
+
+    <style>
+    html, body, #map {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    .legend {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    </style>
+
+    <script>
+    function initMap() {
+        const center = { lat: 35.6764225, lng: 139.650027 };
+
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 13,
+            center: center
+        });
+
+        const activities = [{"label": 1, "name": "Meiji Jingu", "lat": 35.67639760000001, "lng": 139.6993259}, {"label": 2, "name": "Tokyo Metropolitan Government Building No.1", "lat": 35.6894807, "lng": 139.6916863}, {"label": 3, "name": "Setagaya Literary Museum", "lat": 35.6669245, "lng": 139.6086785}, {"label": 4, "name": "Tokyo Opera City Art Gallery", "lat": 35.6824478, "lng": 139.6873281}, {"label": 5, "name": "COVO Oyster Bar", "lat": 35.6835299, "lng": 139.70299}, {"label": 6, "name": "\u65e5\u672c\u8336\u5c02\u9580\u5e97 CHASEN", "lat": 35.6826355, "lng": 139.6472839}, {"label": 7, "name": "\u30ae\u30e3\u30e9\u30ea\u30fc\u30b9\u30da\u30fc\u30b9\u30b9\u30d7\u30e9\u30a6\u30c8", "lat": 35.6639128, "lng": 139.6661555}, {"label": 8, "name": "\u30b8\u30e7\u30ca\u30b5\u30f3 \u65b9\u5357\u753a\u5e97", "lat": 35.68309789999999, "lng": 139.6565178}, {"label": 9, "name": "Tendon Tenya Keio Crown Street Sasazuka Restaurant", "lat": 35.6736793, "lng": 139.666709}];
+        const path = [];
+
+        // Add markers
+        activities.forEach(a => {
+            const pos = { lat: a.lat, lng: a.lng };
+            path.push(pos);
+
+            new google.maps.Marker({
+                position: pos,
+                map: map,
+                label: String(a.label),
+                title: a.name
+            });
+        });
+
+        // Draw a polyline connecting all activities in order
+        if (path.length > 1) {
+            new google.maps.Polyline({
+                map: map,
+                path: path,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+        }
+    }
+    </script>
+
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrGCJayzxONmdX-sxtDBR0RFGjKhLVCe4&callback=initMap">
+    </script>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="legend">
+        <strong>Activity Map</strong><br/>
+        Numbered markers indicate the activity list order.
+    </div>
+</body>
+</html>

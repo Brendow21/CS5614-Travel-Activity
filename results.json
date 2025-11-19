@@ -1,0 +1,257 @@
+{
+  "activities": [
+    {
+      "place_id": "ChIJ5SZMmreMGGARcz8QSTiJyo8",
+      "name": "Meiji Jingu",
+      "address": "1-1 Yoyogikamizonochō, Shibuya",
+      "location": {
+        "lat": 35.67639760000001,
+        "lng": 139.6993259
+      },
+      "rating": 4.6,
+      "user_ratings_total": 46528,
+      "types": [
+        "tourist_attraction",
+        "place_of_worship",
+        "point_of_interest",
+        "establishment"
+      ],
+      "opening_hours": null,
+      "price_level": null,
+      "photos": [
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AWn5SU4GIh93yh8cZcCGu5V-zJYqHYSj1ouswoQIApjxfrAW8imtURtdNThRyUL_1tdAxqaUj1nygxGEUbG8hho3F5vmdMtcM-sG_8yOp9Y-CXEfXEDPb-5aE0ZaX0KZkm6AyerebqfxkqeVtorp_2xPXFKjT2q-PRd3CaQCi7iaeCQ_irfgXFS5JQTT2D9Xy6ITpqugQsbHXvLZgIQcdDvF4lpX-8re3ihplD4gkBtGl4_3kPyR_VHExe3r7TK97B3Z0sZqyZaeAXHtlvtVWPl7m2uKvEvrShxbw7xUzJ4R-e3ZrKD9ZBISZFF1NDJpPvDVJn48dDxqKgcZz4zewQff-VFC8S20KC1LP5rD_x0d-2fYx0LCnVVopJ1P_KxU6fiB34if3mLvYWA4kNRC7ZuPriUkqwJOBZozp7UE5U5Qv05l8urYqjq9LJ5rQRJr2Mz4049Pb8s46bfTPa1jR8ut2r1eCrPwYEr10WEr30vCVyPmcFSJY0OyVhg9xSvZ56GLvnhz_Gf_VWcdWuxPqybk8t0EUcs2K1drDkMdJbvRiwmZF1mijbsRNHc2Er_FUhhjJE1K71CVKiHRbfUVKItBB_JJ5w0JbwQMb6maNgbF-4rN9XuUZguwYNBJYKEFj4ZP1ac4R9Qg&key=AIzaSyBrGCJayzxONmdX-sxtDBR0RFGjKhLVCe4"
+      ],
+      "reviews": [],
+      "distance": 6698
+    },
+    {
+      "place_id": "ChIJoTcat9SMGGAR6GGG8zdcZvE",
+      "name": "Tokyo Metropolitan Government Building No.1",
+      "address": "2-chōme-8-1 Nishishinjuku, Shinjuku City",
+      "location": {
+        "lat": 35.6894807,
+        "lng": 139.6916863
+      },
+      "rating": 4.5,
+      "user_ratings_total": 6267,
+      "types": [
+        "city_hall",
+        "tourist_attraction",
+        "local_government_office",
+        "point_of_interest",
+        "establishment"
+      ],
+      "opening_hours": {
+        "open_now": false
+      },
+      "price_level": null,
+      "photos": [
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AWn5SU5ib-Qv5S-3F6TN5ciFZVyuQJBMB_EEFEKhHXit6g_7jDi2sp3w1yop3BLw5xIuQXm_OsHwiUvYiWfDU6dJe5ajAr3qi5EGL0Yk0vhIXsVDaLCj0yEy4wqrwQ3HVatWbuuA79OF7Iq1dk5CFOoffPYakfoa8uEJIk0S6p7ZirTh1pXH5pJL2iEH9G-WrKVv6id4O0bDUpaT9CArHYpZMi-OgbU9zEXyF3EE_Cv4gujTlNcjNs-AQdNXvYz-TnJDmHJbREC4q_i476yBgl_148M-4AfS0FVXJ_NjyHWdEavSjnxwwuNiMzfwHhRnVhO6OLj5vMdHWqMHeLJpuCuFAxpunt47F_VEKYryVglmi3_AckrawqIgyhR5xgB41BYGpguPSkN_OZz1v_w8u8cv2PCooyl7XFGYSdr6YFmVeimYlO7vit2SsmXzkzLQnULdVobzx_mhwYBRgrMtBixv6_h4C5TSPGmqBz0BZWQwOCP9Zi49UZIdonV-M92Bu-VxBwvYOmB9Lqf-9RunhP_EHk22sKwSqTfozi7rQSD-Bt4xk7RHRYPIymNRv-u_giU3HCMw-FGjd0e46KgS5CBkj0yHN4X1frMLgZo6UJnIraPGqfE7aVn99_cEhTzbmPu-tvj44w&key=AIzaSyBrGCJayzxONmdX-sxtDBR0RFGjKhLVCe4"
+      ],
+      "reviews": [],
+      "distance": 5551
+    },
+    {
+      "place_id": "ChIJj3AnkIfxGGAR9iYAWfmjqQI",
+      "name": "Setagaya Literary Museum",
+      "address": "1-chōme-10-10 Minamikarasuyama, Setagaya City",
+      "location": {
+        "lat": 35.6669245,
+        "lng": 139.6086785
+      },
+      "rating": 4.4,
+      "user_ratings_total": 1704,
+      "types": [
+        "museum",
+        "point_of_interest",
+        "establishment"
+      ],
+      "opening_hours": {
+        "open_now": false
+      },
+      "price_level": null,
+      "photos": [
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AWn5SU7Is0LHoOYeDeLRc3JZBiZ6bn-qmptcem3aoHoZuucLTmDH5BUPJe5MxQAlh2uE6X8S1PzgFUwHNmE6WliParx74aGTah1VBhjiiRy9WhC7OsLXbL6i3Mh8IsEd5Itsy3VYlfBk9ok0AmEnhW_oNsIA-axBTs6SaKdFqn0G7bXhhZRY4oQyAFGl5af4O2mGzBIkWUFD4OUmuPeqC3TMLHbgQpMHSDylSdF6zNc1oURN5D6gHh4PskcTkfBhnNL2LYzAML-GTCMBq6_zn-9SvKTdiP20stC333SYHwllnTsxLW9uspvP60F8T1fV-bxt_R2GRwO2GnRfIPGCAHON6c2GfJ7eAB9eCfJ7FMHvHR1fC6hLFh3WPd-NxdT9XWyJGnmRTBH1008f3tjD6vgTzsIAabS3LT4Ien86KEV6sxi_bjmp6qH2sjNTENpbfUIZ_hYpdHIa5CZMBX3EWTJR_-cuqSiPoJrfjJA-ivy2MGGBdx6qqb8vGCfGzCpf6V1lFuAF09dKTjBMD-qNO-cOoPfARzRkzZgWV8bq0v48giQeQX1yQripaxoxP29hA3JNMuedS9ljb3Gj7bouIdHbtM1gHOGhaSURipej90JNIbNSIUmnxMWznZO3ZrUzyVlH35p2I33j&key=AIzaSyBrGCJayzxONmdX-sxtDBR0RFGjKhLVCe4"
+      ],
+      "reviews": [],
+      "distance": 5607
+    },
+    {
+      "place_id": "ChIJCaoz7S3zGGARrAnbz14VDcw",
+      "name": "Tokyo Opera City Art Gallery",
+      "address": "3-chōme-20-2 Nishishinjuku, Shinjuku City",
+      "location": {
+        "lat": 35.6824478,
+        "lng": 139.6873281
+      },
+      "rating": 4.3,
+      "user_ratings_total": 841,
+      "types": [
+        "tourist_attraction",
+        "museum",
+        "point_of_interest",
+        "establishment"
+      ],
+      "opening_hours": {
+        "open_now": false
+      },
+      "price_level": null,
+      "photos": [
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AWn5SU42_QK_Orz7qryicvn7-JYTW6JlAhl7vQGqSCGkeWR16rAuZVQyIkCuYGw7UY0PjtPM2IaDU5hmKwEAk59GHYNRxwLevmT9jpsI7mCfqMw2bNdRNQ1FRNzrhhGvEbPiTbR4OAjjzadL9PyZxneZc4hY_frIU4DM3rrNCXQDKUHFPK400dpYyVFKBkXl-ea88zT45qVmDbFWcwo1Rnlzcu6qiWAZDy0ZW3mkAzIjuqVTmmcnhN6ExZwUlhw5Q3jea-fTUkk_VTNAIUOsAO-lAOLRQqcWvVE1lvFQERipOuuS1bXG7kRBNINfzVDwWBStTHKGwjoi&key=AIzaSyBrGCJayzxONmdX-sxtDBR0RFGjKhLVCe4"
+      ],
+      "reviews": [],
+      "distance": 4288
+    },
+    {
+      "place_id": "ChIJ1YdpdsaMGGARMfnoMwudPGQ",
+      "name": "COVO Oyster Bar",
+      "address": "5-chōme-20-16 Sendagaya, Shibuya",
+      "location": {
+        "lat": 35.6835299,
+        "lng": 139.70299
+      },
+      "rating": 4.3,
+      "user_ratings_total": 166,
+      "types": [
+        "tourist_attraction",
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "opening_hours": {
+        "open_now": false
+      },
+      "price_level": 2,
+      "photos": [
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AWn5SU6EzxHEuf7VME6L-PKKRiSKt48oynCfFxnpqsQlOulJs_wwV5Yzqg3h1C4qVObcp3RoQz_75Xxbu5q2o6wz6iWXc8BpxFCGLd4mkfTE0ohdV6Lc1e03QkrZ3PVSmbSiF-WrCXDzNR40aRy4BXMOhhjacok40gzJrzxfZCByCmQBg3DGzj-CHSrGz1nwMAe1R1QDBE8ijVpABXi8lmkSFkuO-uEsEX1k_0qFxiL7nEa2vIUYjvHSiN_8Q-WChEwMhKUDu2Q8n9OKCNzsD6qpLFuIArzlq7zamBDyfD2W45Bm4jtxYB6mIAKnjh6C_ybIrqjXRq6E8t0&key=AIzaSyBrGCJayzxONmdX-sxtDBR0RFGjKhLVCe4"
+      ],
+      "reviews": [],
+      "distance": 6014
+    },
+    {
+      "place_id": "ChIJF9FcDlfyGGARj8JKIypUZAQ",
+      "name": "日本茶専門店 CHASEN",
+      "address": "3-chōme-59-19 Izumi, Suginami City",
+      "location": {
+        "lat": 35.6826355,
+        "lng": 139.6472839
+      },
+      "rating": 4,
+      "user_ratings_total": 56,
+      "types": [
+        "meal_takeaway",
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "store",
+        "establishment"
+      ],
+      "opening_hours": {
+        "open_now": false
+      },
+      "price_level": null,
+      "photos": [
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AWn5SU7K75oWJuVobpoWOA0vXrDyXm_jBcmXcpXC3nCyW0PcEQf8Nr_cfgjmRWWsu7EKYW-tbmLmnH1y0abPKvSZ9MHBa9jKMm6ELw02OeWvW-ibX_he8WPj8vHwRzaRfDSk_i8HfUbcOa-RCdswK4ToD9SXgusH9Wpv4wS4kn9G0TSXExjFWTTm8QzCUD-xG68zqfGzMZnQdfmSPOwhtpMYH2QToiuR4bMOANJg_J-1yGvYouGmVm7MX0XrtXJLWtcpX23kZh30_wFL3vLnzIYlUgMOoMMxG4g71QDt-0jkmhOmcPX5GZK_OrBOl9C73y8Me_DBaBmA-x_VLhrE2OuyvdfBxGIXusvLauqm_VJkK8qdr-BxHF6JAzbLWXRmIdfeB_H1q3S4xzm1poJ7Qn51SN_cdkWya1o_htshCi9JPaDOFOikPeAfiQ_kHQXgExgqYkAvFG6foS8rl4BOa_nEdHFXn1SNxoAAkompRLozPz76lroM8N9vryGHirwl5GAfwWEHFM2P5k3Gzy-ZEuORka1GQKXcXtr7nRcJa4Rwwm4ONkNYkeawgg0xzWYsRrgOdQHI23xTQEnFHzcrJVfsp3DhIR1JCse_uwYRjpQzrnkSQQ_OtD0vth5ugEXNddk0&key=AIzaSyBrGCJayzxONmdX-sxtDBR0RFGjKhLVCe4"
+      ],
+      "reviews": [],
+      "distance": 1478
+    },
+    {
+      "place_id": "ChIJW_aKUWvzGGARowLLb36HEtI",
+      "name": "ギャラリースペーススプラウト",
+      "address": "ＣＯＳ下北沢 102, 2-chōme-39−６ Kitazawa, Setagaya City世田谷区",
+      "location": {
+        "lat": 35.6639128,
+        "lng": 139.6661555
+      },
+      "rating": 3.8,
+      "user_ratings_total": 5,
+      "types": [
+        "art_gallery",
+        "museum",
+        "store",
+        "point_of_interest",
+        "establishment"
+      ],
+      "opening_hours": null,
+      "price_level": null,
+      "photos": [
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AWn5SU6UhHQQTNpJKmJIP4GuhFjnQ70bvMUp-lKsQZWCMuVlciE052yLUk9qPU7bWDoN-njtuIihceDZlJqXX6zgiXSx22A10V6xk_e97rlzl6agwPKmz5OEQefub-kv8ApGKTyRL3FXayYT6BzWu2gLcXTmyYGzAjxewQYQaWA9IEtNF78tscd1I9tITZQWmgsig9AOWXOwBrHpRKiZ_oQGGp7ioPPn0GqKejcSDJWLi2VG8Aqf3qOtMZRlcHMQJfyw_27qWhel_RpxsgvsqVQWIEXp8Vuj24YSTnD-PgEuBvP-91mzbJw3Md5_dWf22s3tVAmQbEpD9aY-vAS3umER3vh8UoUnMdnoqR7eBO1mEgU_vtMHH9S5cmbYbQaaj2xHUGgJTt-8hQBGObauRuJ2rcLRVTDsuCvY-SJ0zKwkwGkL3E0uN9wn__YYOTem5Ret4lkU9I3ssx2lJYnElLOQwQ8aSSKWmYnUKGEiz1muL2Pltk4YWUfc13onJYG-Vq5dcrY6pF3yuNba1cRHL2d4XF0D5QHMt0TgG9VjxB3G4hkiQ6nVUDwK5STWBBvLgu-6B_FbUJsWZ4QNxoE10YuM5e-yR5DY3r0ENGrsit_5wcHdMc05tm_JWZxJZysfvn9I3MWJ7g&key=AIzaSyBrGCJayzxONmdX-sxtDBR0RFGjKhLVCe4"
+      ],
+      "reviews": [],
+      "distance": 3150
+    },
+    {
+      "place_id": "ChIJM6eoC_zyGGARr_FhjO_yfm0",
+      "name": "ジョナサン 方南町店",
+      "address": "4-chōme-51-10 Izumi, Suginami City",
+      "location": {
+        "lat": 35.68309789999999,
+        "lng": 139.6565178
+      },
+      "rating": 3.5,
+      "user_ratings_total": 440,
+      "types": [
+        "meal_delivery",
+        "meal_takeaway",
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "opening_hours": {
+        "open_now": false
+      },
+      "price_level": 2,
+      "photos": [
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AWn5SU4zkuyclEVrjs-yEqeRiuQ6f_uMWY0ZgT9dX6mAXJxa4PJGKs8iu99Fk4vWaPW2hL2_GvRGubtNh1npgPA83b-GLROgx1GpKUNbZA-N3ArbxLTrP4wuXP0I2ZB-8sKAqmnSUSrI3TfRJJf9VwvSLKcxuz5xGFS4UzYapmLRzJt-zD2rAApx0NhHFJEpso6UHMYWWyc6CSr8p_wFW7VXIdbzlUcJ6zJ8i3zeydQ3QYvbiwKd-Rbx6lKFbAAPEuPQClGzISKs2shxtf0w6JsSiFR85qQCcVm2J1tnMAcvlF7KO6WH16pQ_9FT1T2jIHG7M7feFojmMq2uROHRcuAoCsDKUryqyqB7KLuVLKl7EV0FtgYgkhHJp68vW3ldrtl2Vs1idNeaNzL3akH5UyPA5mPr3VZlE088DjXE8AlTlj1BvHj3ogR_9VHklOuhS4OmuR5idavxvAukdS33bedw97ZMq5uSZuWyt9IcTYSFDXokdVzml_xTzKTNDXQGoShbUUSXFFMVW8ja0b_5kOJlzubU6zF59LuCHsKerLp0Q1C_4gPKqoRD8nq3Gra3lm08KHIPAJeA1Nwddp1kW3F1c5I2ZHRfOmCeJibCMCoLLJyLMrOI_HLSwj7-YI8MlS-KVeKzYkGS&key=AIzaSyBrGCJayzxONmdX-sxtDBR0RFGjKhLVCe4"
+      ],
+      "reviews": [],
+      "distance": 1796
+    },
+    {
+      "place_id": "ChIJk4D41hnzGGARsKL6D9KF-Eg",
+      "name": "Tendon Tenya Keio Crown Street Sasazuka Restaurant",
+      "address": "京王クラウン街笹塚, 1-chōme-56−１８ Sasazuka, Shibuya",
+      "location": {
+        "lat": 35.6736793,
+        "lng": 139.666709
+      },
+      "rating": 3.2,
+      "user_ratings_total": 181,
+      "types": [
+        "meal_takeaway",
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "opening_hours": {
+        "open_now": false
+      },
+      "price_level": 1,
+      "photos": [
+        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=AWn5SU4P3NZo6XuFGvH2AuXnd5o-aF73b1y87vYhNx0gpZ_jhm3X1UUYNt7CWIx5Xon5G80PcvfAzBEIZ4yPy2MgAtMTIZBn0xtEhxSvr2xYMGOy2pe4PE4sRoEqwfystzzZ9Sd6liFWr1OvhIdxKK-bRClVJTKLirfzZa-3mZr4660T12nmi6n5RXZkht0lJ-FGDTraYXvKOEkMZNhF50ccezCAfJc5jRWbGE3iexaRuudwKxNTQd2m5P7IlASRJxosirCWrWoZ921U3IeVDdVZSIIWuEgpOWLryJT_3gjIr9jInFBsnf_si11RoGsQs_qBP6WkvGZf1OCrh1ycenM7N2FvoiAcEqNDbSApZ9nDYxpSngHecuPTMGPw8jROh-yYoypKw4SN7nPxB1NPBnWbTGY14Cn3Gd_mqTJ4BkntonpoexYrhLU-bsW1-83wycKH6X-ZAKDIcAgjCwgwyKupyhdu8lQwkH5rpjQzSHkOlR7cOIFP8qzYj8WtigDWt92sv2k284riGJ053kiiz3xd4FOaHCACLdyyr8eFmGAR4Lr-RxZs49Wkq-Hegoqxav5-gWnz272b4foYlfYCL4cd_Ku30asmzE-sd2q0KVApooW6ftbuFhqLOygYnTR8N0cqWWf8aA&key=AIzaSyBrGCJayzxONmdX-sxtDBR0RFGjKhLVCe4"
+      ],
+      "reviews": [],
+      "distance": 3098
+    }
+  ],
+  "total_count": 9,
+  "search_location": {
+    "lat": 35.6764225,
+    "lng": 139.650027
+  },
+  "timestamp": "2025-11-19T16:45:18.411576",
+  "query_info": {
+    "query": "Tokyo, Japan",
+    "activity_types": [
+      "tourist_attraction",
+      "restaurant",
+      "museum"
+    ],
+    "radius": 5000,
+    "sort_by": "rating"
+  }
+}

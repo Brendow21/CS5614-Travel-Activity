@@ -1,0 +1,170 @@
+Starting Optuna Tuning Script...
+
+Real-Time Travel Activity System
+
+============================================================
+Scenario 1: Basic Search — Tokyo Activities
+============================================================
+
+Search Location: {'lat': 35.6764225, 'lng': 139.650027}
+Timestamp: 2025-11-19T16:45:18.411576
+Total Activities Found: 9
+
+1. Meiji Jingu
+   Rating: 4.6 (46528 reviews)
+   Address: 1-1 Yoyogikamizonochō, Shibuya
+   Distance: 6.70km
+   Price: N/A
+   Types: tourist_attraction, place_of_worship, point_of_interest
+
+2. Tokyo Metropolitan Government Building No.1
+   Rating: 4.5 (6267 reviews)
+   Address: 2-chōme-8-1 Nishishinjuku, Shinjuku City
+   Distance: 5.55km
+   Price: N/A
+   Types: city_hall, tourist_attraction, local_government_office
+
+3. Setagaya Literary Museum
+   Rating: 4.4 (1704 reviews)
+   Address: 1-chōme-10-10 Minamikarasuyama, Setagaya City
+   Distance: 5.61km
+   Price: N/A
+   Types: museum, point_of_interest, establishment
+
+4. Tokyo Opera City Art Gallery
+   Rating: 4.3 (841 reviews)
+   Address: 3-chōme-20-2 Nishishinjuku, Shinjuku City
+   Distance: 4.29km
+   Price: N/A
+   Types: tourist_attraction, museum, point_of_interest
+
+5. COVO Oyster Bar
+   Rating: 4.3 (166 reviews)
+   Address: 5-chōme-20-16 Sendagaya, Shibuya
+   Distance: 6.01km
+   Price: $$
+   Types: tourist_attraction, restaurant, food
+
+============================================================
+Scenario 2: Detailed Activity Information
+============================================================
+
+Meiji Jingu
+Rating: 4.6 (46528 reviews)
+Photos: 5
+
+Top Reviews:
+ - mhi_chanphjp (5★)
+   This place is in the heart of Tokyo as well, the Meiji Jingu. I was surprised because the place is v...
+ - Marissa G. W (5★)
+   This shrine was really peaceful and beautiful, and what makes it even better is that everything is c...
+ - Zella Keiko Bawr (5★)
+   We came here around 5pm and it was still really busy, but the moment you walk through the big torii ...
+
+============================================================
+Scenario 3: Route Planning
+============================================================
+
+Optimized Route (5 stops):
+
+1. Tokyo Opera City Art Gallery
+   Dist. from start: 4.29km
+
+2. Tokyo Metropolitan Government Building No.1
+   Dist. from start: 5.55km
+
+3. COVO Oyster Bar
+   Dist. from start: 6.01km
+
+4. Meiji Jingu
+   Dist. from start: 6.70km
+
+5. Setagaya Literary Museum
+   Dist. from start: 5.61km
+
+Route Overview:
+
+START → Tokyo Opera City Art Gallery
+  ↓
+Tokyo Metropolitan Government Building No.1
+  ↓
+COVO Oyster Bar
+  ↓
+Meiji Jingu
+  ↓
+Setagaya Literary Museum
+
+Route planning complete.
+
+============================================================
+Scenario 4: Personalized Recommendations
+============================================================
+Top Personalized Results:
+
+1. Tokyo Opera City Art Gallery
+   Rating: 4.3 (841 reviews)
+   Address: 3-chōme-20-2 Nishishinjuku, Shinjuku City
+   Distance: 4.29km
+   Price: N/A
+   Types: tourist_attraction, museum, point_of_interest
+
+2. COVO Oyster Bar
+   Rating: 4.3 (166 reviews)
+   Address: 5-chōme-20-16 Sendagaya, Shibuya
+   Distance: 6.01km
+   Price: $$
+   Types: tourist_attraction, restaurant, food
+
+3. Setagaya Literary Museum
+   Rating: 4.4 (1704 reviews)
+   Address: 1-chōme-10-10 Minamikarasuyama, Setagaya City
+   Distance: 5.61km
+   Price: N/A
+   Types: museum, point_of_interest, establishment
+
+4. ギャラリースペーススプラウト
+   Rating: 3.8 (5 reviews)
+   Address: ＣＯＳ下北沢 102, 2-chōme-39−６ Kitazawa, Setagaya City世田谷区
+   Distance: 3.15km
+   Price: N/A
+   Types: art_gallery, museum, store
+
+5. Meiji Jingu
+   Rating: 4.6 (46528 reviews)
+   Address: 1-1 Yoyogikamizonochō, Shibuya
+   Distance: 6.70km
+   Price: N/A
+   Types: tourist_attraction, place_of_worship, point_of_interest
+
+============================================================
+Scenario 5: Generating Dynamic Map
+============================================================
+
+Dynamic map saved to: /home/chuanl/DTF_experiments/travel_activity_system/dynamic_map.html
+Open this file on your local machine to view the interactive map.
+
+Results saved to results.json
+
+All scenarios completed successfully.
+
+============================= test session starts ==============================
+platform linux -- Python 3.10.19, pytest-9.0.1, pluggy-1.6.0 -- /home/chuanl/.conda/envs/dtf/bin/python3.10
+cachedir: .pytest_cache
+rootdir: /home/chuanl/DTF_experiments/travel_activity_system
+plugins: anyio-4.11.0
+collecting ... collected 12 items
+
+tests/test_system.py::TestUtils::test_validate_location_valid PASSED     [  8%]
+tests/test_system.py::TestUtils::test_validate_location_invalid PASSED   [ 16%]
+tests/test_system.py::TestUtils::test_haversine_distance PASSED          [ 25%]
+tests/test_system.py::TestUtils::test_format_distance PASSED             [ 33%]
+tests/test_system.py::TestGeocoding::test_geocode_valid_location SKIPPED [ 41%]
+tests/test_system.py::TestGeocoding::test_geocode_invalid_location SKIPPED [ 50%]
+tests/test_system.py::TestSearch::test_search_nearby_activities SKIPPED  [ 58%]
+tests/test_system.py::TestSearch::test_search_with_invalid_location SKIPPED [ 66%]
+tests/test_system.py::TestRecommendation::test_recommend_activities SKIPPED [ 75%]
+tests/test_system.py::TestRecommendation::test_recommend_with_sorting SKIPPED [ 83%]
+tests/test_system.py::TestRoutePlanning::test_plan_route SKIPPED (GO...) [ 91%]
+tests/test_system.py::TestPersonalization::test_personalized_recommend SKIPPED [100%]
+
+========================= 4 passed, 8 skipped in 0.15s =========================

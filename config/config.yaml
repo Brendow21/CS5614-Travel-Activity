@@ -1,0 +1,36 @@
+# Google API Configuration
+google_api:
+  rate_limit: 10  # requests per second
+  timeout: 10  # seconds
+  batch_size: 25  # for distance matrix API
+
+# Search Defaults
+search_defaults:
+  radius: 5000  # meters
+  max_results: 20
+  max_per_type: 10
+
+# Supported Activity Types
+activity_types:
+  - tourist_attraction
+  - restaurant
+  - museum
+  - park
+  - shopping_mall
+  - night_club
+  - art_gallery
+  - cafe
+  - bar
+  - movie_theater
+
+# Map Configuration
+map_config:
+  default_zoom: 13
+  map_size: "800x600"
+  max_markers: 10
+  marker_color: "red"
+
+# Route Planning
+route_config:
+  algorithm: "greedy"  # greedy or optimal
+  max_waypoints: 10

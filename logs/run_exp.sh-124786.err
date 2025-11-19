@@ -1,0 +1,11 @@
+2025-11-19 16:45:16,988 - src.travel_system - INFO - Travel Activity System initialized
+2025-11-19 16:45:16,988 - src.travel_system - INFO - Starting recommendation for: Tokyo, Japan
+2025-11-19 16:45:17,130 - src.travel_system - INFO - Geocoded 'Tokyo, Japan' to {'lat': 35.6764225, 'lng': 139.650027}
+2025-11-19 16:45:17,386 - src.travel_system - INFO - Found 3 activities of type 'tourist_attraction'
+2025-11-19 16:45:17,881 - src.travel_system - INFO - Found 3 activities of type 'restaurant'
+2025-11-19 16:45:18,270 - src.travel_system - INFO - Found 3 activities of type 'museum'
+2025-11-19 16:45:18,270 - src.travel_system - INFO - Total activities found: 9
+2025-11-19 16:45:18,411 - src.travel_system - INFO - Returning 9 unique activities
+2025-11-19 16:45:18,634 - src.travel_system - INFO - Retrieved details for: Meiji Jingu
+2025-11-19 16:45:18,634 - src.travel_system - INFO - Planned route with 5 stops
+2025-11-19 16:45:18,634 - src.travel_system - INFO - Personalized sorting completed for 9 activities
