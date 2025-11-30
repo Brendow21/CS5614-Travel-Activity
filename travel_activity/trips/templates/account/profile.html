@@ -4,19 +4,93 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'profile.css' %}">
 
-<div class="profile-container">
-    <h1>Welcome, {{ user.username }}!</h1>
+<div class="profile-wrapper">
 
-    <div class="profile-info">
-        <p><strong>Username:</strong> {{ user.username }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
+    <!-- Sidebar Card -->
+    <div class="profile-card">
+        <h2 class="profile-username">{{ user.username }}</h2>
+        <p class="profile-email">{{ user.email }}</p>
+
+        <form id="logout-form" method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="logout-btn" type="submit">Logout</button>
+        </form>
     </div>
 
-    <form id="logout-form" method="POST" action="{% url 'logout' %}" style="display:none;">
-        {% csrf_token %}
-    </form>
+    <!-- Settings Form -->
+    <div class="profile-settings">
+        <h1>Edit Profile</h1>
 
-    <button onclick="document.getElementById('logout-form').submit();">Logout</button>
+        <form method="POST" action="">
+            {% csrf_token %}
+
+            <!-- Name -->
+            <div class="form-section">
+                <label>Name</label>
+                <input type="text" name="name" placeholder="Your full name"
+                       value="{{ user.first_name }}">
+            </div>
+
+            <!-- Bio -->
+            <div class="form-section">
+                <label>Bio</label>
+                <textarea name="bio" rows="3"
+                          placeholder="Tell us about yourself...">{{ user.profile.bio }}</textarea>
+            </div>
+
+            <!-- Preferences -->
+            <div class="form-section">
+                <label>Travel Preferences</label>
+
+                <div class="preferences-options">
+                    {% for pref in prefs_list %}
+                        <label class="preference-option">
+                            <input type="checkbox"
+                                   class="pref-checkbox"
+                                   value="{{ pref }}">
+                            <span>{{ pref }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+
+                <!-- Hidden field storing CSV list -->
+                <input type="hidden"
+                       name="preferences"
+                       id="preferences-input"
+                       value="{{ user.profile.preferences }}">
+            </div>
+
+            <button class="save-btn" type="submit">Save Changes</button>
+
+        </form>
+    </div>
 </div>
+
+<!-- JavaScript -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const checkboxes = document.querySelectorAll(".pref-checkbox");
+    const input = document.getElementById("preferences-input");
+
+    // Pre-check based on saved preferences
+    const saved = input.value.split(",").map(s => s.trim());
+    checkboxes.forEach(cb => {
+        if (saved.includes(cb.value)) {
+            cb.checked = true;
+        }
+    });
+
+    // Sync checkboxes with hidden input
+    checkboxes.forEach(cb => {
+        cb.addEventListener("change", () => {
+            const selected = [...checkboxes]
+                .filter(x => x.checked)
+                .map(x => x.value);
+
+            input.value = selected.join(",");
+        });
+    });
+});
+</script>
 
 {% endblock %}

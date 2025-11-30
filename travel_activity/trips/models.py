@@ -6,7 +6,8 @@ class User(AbstractUser):
     Extend Django's AbstractUser to add extra fields if needed.
     username, email, password are already included in AbstractUser.
     """
-    pass
+    bio = models.TextField(blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
 
 
 class Trip(models.Model):

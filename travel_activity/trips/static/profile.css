@@ -1,25 +1,127 @@
-.profile-container {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+/* Wrapper Layout */
+.profile-wrapper {
+    display: flex;
+    gap: 40px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.profile-container h1 {
-    margin-bottom: 1rem;
+/* LEFT PROFILE CARD */
+.profile-card {
+    width: 280px;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    text-align: center;
 }
 
-.profile-container p {
-    margin: 0.5rem 0;
+.profile-card h2 {
+    font-size: 1.8rem;
+    color: #222;
+    margin-bottom: 5px;
 }
 
-.profile-container ul {
-    list-style-type: none;
-    padding: 0;
+.profile-email {
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
 }
 
-.profile-container li {
-    margin: 0.5rem 0;
+/* RIGHT SETTINGS PANEL */
+.profile-settings {
+    flex: 1;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.profile-settings h1 {
+    margin-bottom: 25px;
+    font-size: 2rem;
+    color: #222;
+}
+
+/* FORM SECTIONS */
+.form-section {
+    margin-bottom: 20px;
+}
+
+.form-section label {
+    font-size: 1rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.form-section input,
+.form-section textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #fafafa;
+    transition: border 0.2s;
+}
+
+.form-section input:focus,
+.form-section textarea:focus {
+    border-color: #0073b1;
+    outline: none;
+}
+
+/* Save Button */
+.save-btn {
+    padding: 12px 20px;
+    background: #0073b1;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.save-btn:hover {
+    background: #005f91;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .profile-wrapper {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .profile-card {
+        width: 100%;
+    }
+}
+.preferences-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pref-btn {
+    padding: 8px 14px;
+    border: 1px solid #cfcfcf;
+    background: #fafafa;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.pref-btn:hover {
+    background: #eee;
+}
+
+.pref-btn.selected {
+    background: #0073b1;
+    color: white;
+    border-color: #005f8a;
 }
