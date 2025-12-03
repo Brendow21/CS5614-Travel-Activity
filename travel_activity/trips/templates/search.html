@@ -67,7 +67,6 @@
         </div>
     </aside>
 
-
     <!-- Main Content (Map) -->
     <main class="main-content">
         <!-- Search Bar -->
@@ -75,16 +74,19 @@
             <input type="text" id="search-query" name="q" class="search-input" placeholder="Search destinations, activities..." value="{{ query }}">
             <button type="submit" class="search-btn">Search</button>
         </form>
-        <div id="map-container"></div>
+        <div id="map-container" style="width:100%; height:80%; margin-top:20px;"></div>
     </main>
 
-    <!-- Right Sidebar -->
+    <!-- Right Sidebar (Results) -->
     <aside class="recommended-panel">
         <h2>Search Results:</h2>
         <div id="results" class="activity-cards">
             {% if results %}
                 {% for activity in results %}
-                    <div class="activity-card">
+                    <div class="activity-card activity-item" 
+                         data-lat="{{ activity.location.lat }}" 
+                         data-lng="{{ activity.location.lng }}"
+                         data-name="{{ activity.name }}">
                         {% if activity.photos %}
                             <img src="{{ activity.photos.0 }}" class="activity-photo" />
                         {% endif %}
@@ -124,155 +126,58 @@
         </div>
     </aside>
 
-
-
 </div>
+
+<!-- Google Maps JS -->
 <script>
 let map;
-let markers = [];
-let polyline;
+let marker;
 
-// Search activities and update map & results
-async function searchActivities(event) {
-    event.preventDefault(); // Prevent default form submission
-    const query = document.querySelector(".search-input").value;
-    if (!query) return;
-
-    const response = await fetch(`/search/?q=${encodeURIComponent(query)}`);
-    const data = await response.json();
-
-    const activities = data.activities || [];
-    renderResults(activities);
-
-    if (activities.length > 0) {
-        // Use search_location if provided, otherwise center on first activity
-        const center = data.search_location || { lat: activities[0].location.lat, lng: activities[0].location.lng };
-        renderMap(activities, center);
-    }
-}
-
-// Render search results in the right sidebar
-function renderResults(activities) {
-    const resultsDiv = document.querySelector(".recommended-panel");
-    resultsDiv.innerHTML = "<h2>Search Results:</h2>";
-
-    if (!activities.length) {
-        resultsDiv.innerHTML += "<p>No results found.</p>";
-        return;
-    }
-
-    activities.forEach((a, idx) => {
-        const card = document.createElement("div");
-        card.classList.add("activity-card");
-        card.innerHTML = `
-            <h3>${idx + 1}. ${a.name}</h3>
-            <p>${a.address}</p>
-            <p>Rating: ${a.rating || 'N/A'} (${a.user_ratings_total || 0} reviews)</p>
-            ${a.photos ? `<img src="${a.photos[0]}" width="150"/>` : ''}
-        `;
-        resultsDiv.appendChild(card);
+// Initialize map
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map-container'), {
+        center: { lat: 0, lng: 0 },
+        zoom: 2
     });
-}
 
-// Render Google Map with markers and polyline
-function renderMap(activities, center) {
-    const mapContainer = document.getElementById("map-container");
+    // Make existing activity cards clickable
+    document.querySelectorAll('.activity-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const lat = parseFloat(item.dataset.lat);
+            const lng = parseFloat(item.dataset.lng);
+            const name = item.dataset.name;
 
-    if (!map) {
-        map = new google.maps.Map(mapContainer, {
-            zoom: 13,
-            center: { lat: center.lat, lng: center.lng }
-        });
-    } else {
-        map.setCenter({ lat: center.lat, lng: center.lng });
-        map.setZoom(13); // Reset zoom to default
-    }
+            // Center map and add marker
+            map.setCenter({ lat, lng });
+            map.setZoom(14);
 
-    // Clear old markers
-    markers.forEach(m => m.setMap(null));
-    markers = [];
+            // Remove previous marker
+            if (marker) marker.setMap(null);
 
-    // Clear old polyline
-    if (polyline) polyline.setMap(null);
+            marker = new google.maps.Marker({
+                position: { lat, lng },
+                map: map,
+                title: name
+            });
 
-    const path = [];
-    const bounds = new google.maps.LatLngBounds();
-
-    activities.forEach((a, idx) => {
-        const pos = { lat: a.location.lat, lng: a.location.lng };
-        path.push(pos);
-        bounds.extend(pos);
-
-        const marker = new google.maps.Marker({
-            position: pos,
-            map: map,
-            label: String(idx + 1),
-            title: a.name
-        });
-
-        const infoContent = `
-            <div>
-                <strong>${a.name}</strong><br>
-                ${a.address}<br>
-                Rating: ${a.rating || 'N/A'} (${a.user_ratings_total || 0} reviews)
-                ${a.photos ? `<br><img src="${a.photos[0]}" width="150"/>` : ''}
-            </div>
-        `;
-        const infoWindow = new google.maps.InfoWindow({ content: infoContent });
-
-        marker.addListener("click", () => {
+            const infoWindow = new google.maps.InfoWindow({
+                content: `<strong>${name}</strong>`
+            });
             infoWindow.open(map, marker);
         });
-
-        markers.push(marker);
     });
-
-    // Fit map bounds only if multiple activities exist
-    if (activities.length > 1) {
-        map.fitBounds(bounds);
-    } else if (activities.length === 1) {
-        map.setCenter({ lat: activities[0].location.lat, lng: activities[0].location.lng });
-        map.setZoom(14); // closer zoom for single activity
-    }
-
-    // Draw polyline if multiple points
-    if (path.length > 1) {
-        polyline = new google.maps.Polyline({
-            map: map,
-            path: path,
-            strokeColor: "#FF0000",
-            strokeOpacity: 1.0,
-            strokeWeight: 3
-        });
-    }
 }
 
 // Load Google Maps API
 function loadGoogleMaps() {
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&callback=initEmptyMap`;
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&callback=initMap`;
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
 }
 
-// Initialize empty map
-window.initEmptyMap = function() {
-    const mapContainer = document.getElementById("map-container");
-    map = new google.maps.Map(mapContainer, {
-        zoom: 2,
-        center: { lat: 0, lng: 0 }
-    });
-};
-
-// Event listener for search form
-document.querySelector(".search-bar-container").addEventListener("submit", searchActivities);
-
-// Load Google Maps
 loadGoogleMaps();
 </script>
-
-
-
 
 {% endblock %}
