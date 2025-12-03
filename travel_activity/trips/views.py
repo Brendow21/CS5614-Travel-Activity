@@ -1,17 +1,36 @@
+# Django Imports
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+from django.conf import settings
+
+# Rest Framework Imports
 from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
+
+# Standard Library Imports
+import os
+import sys
+
+# Local Imports
 from .models import Activity, Review, Recommendation, SavedActivity, User, Trip
 from .serializers import ActivitySerializer, RecommendationSerializer, SavedActivitySerializer
 from .recommendations import RecommendationEngine
 from .forms import CustomUserCreationForm
 
+# Retrieve the RealTimeTravelActivitySystem from the src directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(BASE_DIR, '..'))
+from src.travel_system import RealTimeTravelActivitySystem
+
+# Initialize the system with your Google API key
+API_KEY = settings.GOOGLE_MAPS_API_KEY
+travel_system = RealTimeTravelActivitySystem(api_key=API_KEY)
 
 def home(request):
     return render(request, 'home.html')
@@ -149,10 +168,38 @@ def user_saved_activities(request, user_id):
     })
 
 def search_view(request):
-    """
-    Display the search page for Travel Activity.
-    """
-    return render(request, 'search.html')
+    query = request.GET.get("q")
+
+    results = []
+    error_message = None
+
+    if query:
+        try:
+            recommendation = travel_system.recommend_activities(
+                location_query=query,
+                activity_types=[
+                    "tourist_attraction", "restaurant", "museum",
+                    "park", "shopping_mall", "night_club", "art_gallery",
+                    "cafe", "bar", "movie_theater"
+                ],
+                radius=5000,
+                max_per_type=5,
+                sort_by="rating"
+            )
+
+            results = recommendation.activities
+
+        except Exception as e:
+            error_message = str(e)
+
+    return render(request, "search.html", {
+        "query": query,
+        "results": results,
+        "error_message": error_message,
+        "google_api_key": API_KEY
+    })
+
+# User Account Views
 
 @login_required
 def profile_view(request):

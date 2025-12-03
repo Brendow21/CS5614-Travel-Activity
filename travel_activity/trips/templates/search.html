@@ -68,45 +68,211 @@
     </aside>
 
 
-    <!-- Main Content -->
+    <!-- Main Content (Map) -->
     <main class="main-content">
-
         <!-- Search Bar -->
-        <div class="search-bar-container">
-            <input type="text" class="search-input" placeholder="Search destinations, activities...">
-            <button class="search-btn">Search</button>
-        </div>
-
-        <h2 class="section-title">Search Results</h2>
-
-        <div class="activity-card">
-            <h3>Example Activity</h3>
-            <p>This is a placeholder for search results.</p>
-        </div>
-
-        <div class="activity-card">
-            <h3>Another Activity</h3>
-            <p>More example content goes here.</p>
-        </div>
-
+        <form method="get" action="{% url 'search' %}" class="search-bar-container">
+            <input type="text" id="search-query" name="q" class="search-input" placeholder="Search destinations, activities..." value="{{ query }}">
+            <button type="submit" class="search-btn">Search</button>
+        </form>
+        <div id="map-container"></div>
     </main>
 
     <!-- Right Sidebar -->
     <aside class="recommended-panel">
-        <h2>Recommended</h2>
+        <h2>Search Results:</h2>
+        <div id="results" class="activity-cards">
+            {% if results %}
+                {% for activity in results %}
+                    <div class="activity-card">
+                        {% if activity.photos %}
+                            <img src="{{ activity.photos.0 }}" class="activity-photo" />
+                        {% endif %}
 
-        <div class="activity-card">
-            <h3>City Walking Tour</h3>
-            <p>Explore historic streets.</p>
+                        <div class="activity-info">
+                            <h3>{{ activity.name }}</h3>
+                            {% if activity.address %}<p class="address">{{ activity.address }}</p>{% endif %}
+
+                            {% if activity.rating %}
+                                <p class="rating">
+                                    ⭐ {{ activity.rating }} 
+                                    ({% if activity.user_ratings_total %}{{ activity.user_ratings_total }} reviews{% else %}0 reviews{% endif %})
+                                </p>
+                            {% endif %}
+
+                            {% if activity.types %}
+                                <p class="types">Type: {{ activity.types|join:", " }}</p>
+                            {% endif %}
+
+                            {% if activity.opening_hours %}
+                                <p class="hours">{% if activity.opening_hours.open_now %}Open Now{% else %}Closed{% endif %}</p>
+                            {% endif %}
+
+                            {% if activity.price_level %}
+                                <p class="price">Price Level: {{ activity.price_level }}</p>
+                            {% endif %}
+
+                            {% if activity.distance %}
+                                <p class="distance">Distance: {{ activity.distance }} m</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No activities found.</p>
+            {% endif %}
         </div>
-
-        <div class="activity-card">
-            <h3>Local Food Experience</h3>
-            <p>Try signature local dishes.</p>
-        </div>
-
     </aside>
 
+
+
 </div>
+<script>
+let map;
+let markers = [];
+let polyline;
+
+// Search activities and update map & results
+async function searchActivities(event) {
+    event.preventDefault(); // Prevent default form submission
+    const query = document.querySelector(".search-input").value;
+    if (!query) return;
+
+    const response = await fetch(`/search/?q=${encodeURIComponent(query)}`);
+    const data = await response.json();
+
+    const activities = data.activities || [];
+    renderResults(activities);
+
+    if (activities.length > 0) {
+        // Use search_location if provided, otherwise center on first activity
+        const center = data.search_location || { lat: activities[0].location.lat, lng: activities[0].location.lng };
+        renderMap(activities, center);
+    }
+}
+
+// Render search results in the right sidebar
+function renderResults(activities) {
+    const resultsDiv = document.querySelector(".recommended-panel");
+    resultsDiv.innerHTML = "<h2>Search Results:</h2>";
+
+    if (!activities.length) {
+        resultsDiv.innerHTML += "<p>No results found.</p>";
+        return;
+    }
+
+    activities.forEach((a, idx) => {
+        const card = document.createElement("div");
+        card.classList.add("activity-card");
+        card.innerHTML = `
+            <h3>${idx + 1}. ${a.name}</h3>
+            <p>${a.address}</p>
+            <p>Rating: ${a.rating || 'N/A'} (${a.user_ratings_total || 0} reviews)</p>
+            ${a.photos ? `<img src="${a.photos[0]}" width="150"/>` : ''}
+        `;
+        resultsDiv.appendChild(card);
+    });
+}
+
+// Render Google Map with markers and polyline
+function renderMap(activities, center) {
+    const mapContainer = document.getElementById("map-container");
+
+    if (!map) {
+        map = new google.maps.Map(mapContainer, {
+            zoom: 13,
+            center: { lat: center.lat, lng: center.lng }
+        });
+    } else {
+        map.setCenter({ lat: center.lat, lng: center.lng });
+        map.setZoom(13); // Reset zoom to default
+    }
+
+    // Clear old markers
+    markers.forEach(m => m.setMap(null));
+    markers = [];
+
+    // Clear old polyline
+    if (polyline) polyline.setMap(null);
+
+    const path = [];
+    const bounds = new google.maps.LatLngBounds();
+
+    activities.forEach((a, idx) => {
+        const pos = { lat: a.location.lat, lng: a.location.lng };
+        path.push(pos);
+        bounds.extend(pos);
+
+        const marker = new google.maps.Marker({
+            position: pos,
+            map: map,
+            label: String(idx + 1),
+            title: a.name
+        });
+
+        const infoContent = `
+            <div>
+                <strong>${a.name}</strong><br>
+                ${a.address}<br>
+                Rating: ${a.rating || 'N/A'} (${a.user_ratings_total || 0} reviews)
+                ${a.photos ? `<br><img src="${a.photos[0]}" width="150"/>` : ''}
+            </div>
+        `;
+        const infoWindow = new google.maps.InfoWindow({ content: infoContent });
+
+        marker.addListener("click", () => {
+            infoWindow.open(map, marker);
+        });
+
+        markers.push(marker);
+    });
+
+    // Fit map bounds only if multiple activities exist
+    if (activities.length > 1) {
+        map.fitBounds(bounds);
+    } else if (activities.length === 1) {
+        map.setCenter({ lat: activities[0].location.lat, lng: activities[0].location.lng });
+        map.setZoom(14); // closer zoom for single activity
+    }
+
+    // Draw polyline if multiple points
+    if (path.length > 1) {
+        polyline = new google.maps.Polyline({
+            map: map,
+            path: path,
+            strokeColor: "#FF0000",
+            strokeOpacity: 1.0,
+            strokeWeight: 3
+        });
+    }
+}
+
+// Load Google Maps API
+function loadGoogleMaps() {
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&callback=initEmptyMap`;
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+}
+
+// Initialize empty map
+window.initEmptyMap = function() {
+    const mapContainer = document.getElementById("map-container");
+    map = new google.maps.Map(mapContainer, {
+        zoom: 2,
+        center: { lat: 0, lng: 0 }
+    });
+};
+
+// Event listener for search form
+document.querySelector(".search-bar-container").addEventListener("submit", searchActivities);
+
+// Load Google Maps
+loadGoogleMaps();
+</script>
+
+
+
 
 {% endblock %}
