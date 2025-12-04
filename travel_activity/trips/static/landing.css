@@ -8,8 +8,7 @@ html, body {
 }
 
 body {
-    background: 
-        linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background-size: cover;
     display: flex;
     flex-direction: column;
