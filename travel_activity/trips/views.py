@@ -205,8 +205,35 @@ def search_view(request):
 def profile_view(request):
     """
     Display the profile page for the logged-in user."""
+    from datetime import date
+
+    # Handle profile updates
+    if request.method == 'POST':
+        user = request.user
+        user.first_name = request.POST.get('first_name', '')
+        user.last_name = request.POST.get('last_name', '')
+        user.email = request.POST.get('email', '')
+        user.bio = request.POST.get('bio', '')
+        user.phone = request.POST.get('phone', '')
+        user.save()
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('profile')
+
+    # Get user trips
+    all_trips = Trip.objects.filter(user=request.user).order_by('start_date')
+    today = date.today()
+
+    upcoming_trips = all_trips.filter(start_date__gte=today)[:3]
+    past_trips = all_trips.filter(end_date__lt=today).order_by('-end_date')[:3]
+
+    # Preference options
+    prefs_list = ['Adventure', 'Beach', 'City', 'Culture', 'Food', 'History', 'Nature', 'Shopping', 'Sports']
+
     return render(request, 'account/profile.html', {
-        'user': request.user
+        'user': request.user,
+        'upcoming_trips_list': upcoming_trips,
+        'past_trips_list': past_trips,
+        'prefs_list': prefs_list,
     })
 
 def register_view(request):
@@ -232,7 +259,11 @@ def logout_view(request):
 @login_required(login_url='login')
 def saved_view(request):
     """
-    Display the saved trips for the logged-in user.
+    Display the saved activities for the logged-in user.
     """
-    saved_trips = request.user.saved_trips.all()
-    return render(request, 'saved.html', {'saved_trips': saved_trips})
+    saved_activities = SavedActivity.objects.filter(user=request.user).select_related('activity').order_by('-saved_at')
+
+    return render(request, 'saved.html', {
+        'saved_activities': saved_activities,
+        'user': request.user
+    })

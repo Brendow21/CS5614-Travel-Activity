@@ -1,8 +1,13 @@
+/* General Styling */
+* {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
 /* Navbar Styling */
 .navbar {
   background-color: #ffffff;
   border-bottom: 1px solid #e5e7eb;
-  padding: 1rem 2rem;
+  padding: 1rem 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
@@ -12,6 +17,7 @@
 .navbar-container {
   max-width: 1100px;
   margin: 0 auto;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
