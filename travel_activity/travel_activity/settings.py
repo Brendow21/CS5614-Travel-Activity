@@ -129,4 +129,4 @@ LOGIN_URL = 'login'  # This refers to the name='login' in urls.py
 LOGIN_REDIRECT_URL = 'profile'  # Redirect after login
 LOGOUT_REDIRECT_URL = '/'  # Redirect after logout
 
-GOOGLE_MAPS_API_KEY = 'AlzaSyDDBhXsK8UKIA-KS_0Y2_633xdGEsOy4KA'
+GOOGLE_MAPS_API_KEY = 'Your API KEY here'
