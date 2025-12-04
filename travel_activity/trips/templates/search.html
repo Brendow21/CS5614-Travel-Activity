@@ -11,63 +11,45 @@
     <aside class="sidebar">
         <h2>Filter</h2>
 
-        <!-- Price Range -->
-        <div class="section">
-            <label>Price Range</label>
+        <!-- Price Level -->
+        <div class="section price">
+            <label>Price Level</label>
             <div class="two-col">
-                <input type="number" placeholder="Min Price">
-                <input type="number" placeholder="Max Price">
-            </div>
-        </div>
-
-        <!-- Duration -->
-        <div class="section">
-            <label>Duration</label>
-            <div class="two-col">
-                <button>Quick (&lt; 2 hours)</button>
-                <button>Half-day (2–4 hours)</button>
-                <button>Full-day (4–8 hours)</button>
-                <button>Multi-day (8+ hours)</button>
+                <button data-value="1">$</button>
+                <button data-value="2">$$</button>
+                <button data-value="3">$$$</button>
+                <button data-value="4">$$$$</button>
             </div>
         </div>
 
         <!-- Category -->
-        <div class="section">
+        <div class="section category">
             <label>Category</label>
             <div class="two-col">
-                <button>🍽 Restaurant</button>
-                <button>🏛 Museum</button>
-                <button>🏞 Outdoors</button>
-                <button>🎫 Tours</button>
+                <button data-value="restaurant">🍽 Restaurant</button>
+                <button data-value="museum">🏛 Museum</button>
+                <button data-value="park">🏞 Outdoors</button>
+                <button data-value="tour">🎫 Tours</button>
             </div>
         </div>
 
         <!-- Rating -->
-        <div class="section">
+        <div class="section rating">
             <label>Minimum Rating</label>
             <div class="two-col">
-                <button>✨ 3.5+</button>
-                <button>✨ 4+</button>
-                <button>✨ 4.5+</button>
-            </div>
-        </div>
-
-        <!-- Accessibility -->
-        <div class="section">
-            <label>Accessibility</label>
-            <div class="two-col">
-                <button>🦽 Wheelchair Accessible</button>
-                <button>🐕 Pet-Friendly</button>
+                <button data-value="1">1+</button>
+                <button data-value="2">2+</button>
+                <button data-value="3">3+</button>
+                <button data-value="4">4+</button>
             </div>
         </div>
 
         <div class="action-buttons">
-            <button class="clear">Clear All</button>
-            <button class="apply">Apply Filters</button>
+            <button id="clear-filters" class="clear">Clear All</button>
         </div>
     </aside>
 
-    <!-- Main Content (Map) -->
+    <!-- Main Content -->
     <main class="main-content">
         <!-- Search Bar -->
         <form method="get" action="{% url 'search' %}" class="search-bar-container">
@@ -78,7 +60,7 @@
     </main>
 
     <!-- Right Sidebar (Results) -->
-    <aside class="recommended-panel">
+    <aside class="results-panel">
         <h2>Search Results:</h2>
         <div id="results" class="activity-cards">
             {% if results %}
@@ -87,36 +69,13 @@
                          data-lat="{{ activity.location.lat }}" 
                          data-lng="{{ activity.location.lng }}"
                          data-name="{{ activity.name }}">
-                        {% if activity.photos %}
-                            <img src="{{ activity.photos.0 }}" class="activity-photo" />
-                        {% endif %}
-
+                        {% if activity.photos %}<img src="{{ activity.photos.0 }}" class="activity-photo" />{% endif %}
                         <div class="activity-info">
                             <h3>{{ activity.name }}</h3>
                             {% if activity.address %}<p class="address">{{ activity.address }}</p>{% endif %}
-
-                            {% if activity.rating %}
-                                <p class="rating">
-                                    ⭐ {{ activity.rating }} 
-                                    ({% if activity.user_ratings_total %}{{ activity.user_ratings_total }} reviews{% else %}0 reviews{% endif %})
-                                </p>
-                            {% endif %}
-
-                            {% if activity.types %}
-                                <p class="types">Type: {{ activity.types|join:", " }}</p>
-                            {% endif %}
-
-                            {% if activity.opening_hours %}
-                                <p class="hours">{% if activity.opening_hours.open_now %}Open Now{% else %}Closed{% endif %}</p>
-                            {% endif %}
-
-                            {% if activity.price_level %}
-                                <p class="price">Price Level: {{ activity.price_level }}</p>
-                            {% endif %}
-
-                            {% if activity.distance %}
-                                <p class="distance">Distance: {{ activity.distance }} m</p>
-                            {% endif %}
+                            {% if activity.rating %}<p class="rating">⭐ {{ activity.rating }} ({% if activity.user_ratings_total %}{{ activity.user_ratings_total }} reviews{% else %}0 reviews{% endif %})</p>{% endif %}
+                            {% if activity.types %}<p class="types">Type: {{ activity.types|join:", " }}</p>{% endif %}
+                            {% if activity.price_level %}<p class="price">Price Level: {{ activity.price_level }}</p>{% endif %}
                         </div>
                     </div>
                 {% endfor %}
@@ -128,30 +87,27 @@
 
 </div>
 
-<!-- Google Maps JS -->
+<!-- Scripts -->
 <script>
 let map;
 let marker;
 
-// Initialize map
+// Initialize Google Map
 function initMap() {
     map = new google.maps.Map(document.getElementById('map-container'), {
         center: { lat: 0, lng: 0 },
         zoom: 2
     });
 
-    // Make existing activity cards clickable
     document.querySelectorAll('.activity-item').forEach(item => {
         item.addEventListener('click', () => {
             const lat = parseFloat(item.dataset.lat);
             const lng = parseFloat(item.dataset.lng);
             const name = item.dataset.name;
 
-            // Center map and add marker
             map.setCenter({ lat, lng });
             map.setZoom(14);
 
-            // Remove previous marker
             if (marker) marker.setMap(null);
 
             marker = new google.maps.Marker({
@@ -176,8 +132,51 @@ function loadGoogleMaps() {
     script.defer = true;
     document.body.appendChild(script);
 }
-
 loadGoogleMaps();
+
+// Filter
+const selectedFilters = { price: new Set(), category: new Set(), rating: new Set() };
+
+document.querySelectorAll('.sidebar .section button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const section = btn.closest('.section').classList[1];
+        const value = btn.dataset.value;
+
+        btn.classList.toggle('selected');
+        if (btn.classList.contains('selected')) {
+            selectedFilters[section].add(value);
+        } else {
+            selectedFilters[section].delete(value);
+        }
+
+        applyFilters();
+    });
+});
+
+document.getElementById('clear-filters').addEventListener('click', () => {
+    document.querySelectorAll('.sidebar .section button').forEach(btn => btn.classList.remove('selected'));
+    for (let key in selectedFilters) selectedFilters[key].clear();
+    applyFilters();
+});
+
+function applyFilters() {
+    const cards = document.querySelectorAll('.activity-item');
+
+    cards.forEach(card => {
+        const price = card.querySelector('.price') ? card.querySelector('.price').textContent.replace('Price Level: ','') : '';
+        const category = card.querySelector('.types') ? card.querySelector('.types').textContent.replace('Type: ','').toLowerCase().split(', ') : [];
+        const rating = card.querySelector('.rating') 
+            ? parseFloat(card.querySelector('.rating').textContent.match(/⭐\s*([\d.]+)/)[1]) 
+            : 0;
+
+        const priceMatch = selectedFilters.price.size === 0 || selectedFilters.price.has(price);
+        const categoryMatch = selectedFilters.category.size === 0 || Array.from(selectedFilters.category).some(cat => category.includes(cat));
+        const ratingMatch = selectedFilters.rating.size === 0 || Array.from(selectedFilters.rating).some(r => rating >= parseFloat(r));
+
+        card.style.display = (priceMatch && categoryMatch && ratingMatch) ? '' : 'none';
+    });
+}
+
 </script>
 
 {% endblock %}

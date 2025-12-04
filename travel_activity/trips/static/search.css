@@ -1,4 +1,4 @@
-/* ------- BASE LAYOUT -------- */
+/* Base Layout */
 .page-container {
     display: flex;
     width: 100%;
@@ -7,7 +7,7 @@
     box-sizing: border-box;
 }
 
-/* -------- LEFT SIDEBAR -------- */
+/* Left Sidebar */
 .sidebar {
     flex: 0 0 250px;
     background: #fff;
@@ -15,7 +15,6 @@
     overflow-y: auto;
 }
 
-/* Price range inputs */
 .section input[type="number"] {
 padding: 8px;
 border-radius: 8px;
@@ -24,7 +23,6 @@ width: 100%;
 box-sizing: border-box;
 }
 
-/* Two-column wrapper for buttons */
 .section .two-col {
 display: grid;
 grid-template-columns: repeat(2, 1fr);
@@ -32,7 +30,6 @@ gap: 10px;
 margin-top: 5px;
 }
 
-/* Filter buttons */
 .section button {
 padding: 8px 10px;
 background: #f4f4f4;
@@ -42,6 +39,22 @@ cursor: pointer;
 font-size: 0.9rem;
 text-align: center;
 transition: all 0.2s ease-in-out;
+}
+
+.sidebar button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    margin: 4px 2px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.sidebar button.selected {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #0056b3;
 }
 
 .section button {
@@ -90,8 +103,8 @@ background-color: #005fcc;
 transform: translateY(-1px);
 }
 
-/* -------- RIGHT SIDEBAR -------- */
-.recommended-panel {
+/* Right Sidebar */
+.results-panel {
 flex: 0 0 clamp(180px, 22vw, 360px);
 height: 100vh;
 position: sticky;
@@ -104,7 +117,7 @@ border-radius: 12px;
 box-sizing: border-box;
 }
 
-/* -------- MAIN CONTENT -------- */
+/* Main Content */
 .main-content {
     flex: 1;
     position: relative;
@@ -116,7 +129,7 @@ box-sizing: border-box;
     border-radius: 12px;
 }
 
-/* SEARCH BAR */
+/* Search Bar */
 .search-bar-container {
 display: flex;
 gap: 10px;
