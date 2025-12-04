@@ -129,4 +129,12 @@ LOGIN_URL = 'login'  # This refers to the name='login' in urls.py
 LOGIN_REDIRECT_URL = 'profile'  # Redirect after login
 LOGOUT_REDIRECT_URL = '/'  # Redirect after logout
 
-GOOGLE_MAPS_API_KEY = 'Your API KEY here'
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load .env file
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # two parents up
+load_dotenv(BASE_DIR / ".env")
+
+GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_API_KEY")
