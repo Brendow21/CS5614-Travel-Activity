@@ -4,70 +4,215 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'profile.css' %}">
 
-<div class="profile-wrapper">
+<div class="profile-container">
 
-    <!-- Sidebar Card -->
-    <div class="profile-card">
-        <h2 class="profile-username">{{ user.username }}</h2>
-        <p class="profile-email">{{ user.email }}</p>
-
-        <form id="logout-form" method="POST" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button class="logout-btn" type="submit">Logout</button>
-        </form>
-    </div>
-
-    <!-- Settings Form -->
-    <div class="profile-settings">
-        <h1>Edit Profile</h1>
-
-        <form method="POST" action="">
-            {% csrf_token %}
-
-            <!-- Name -->
-            <div class="form-section">
-                <label>Name</label>
-                <input type="text" name="name" placeholder="Your full name"
-                       value="{{ user.first_name }}">
+    <!-- Profile Header -->
+    <section class="profile-header">
+        <div class="profile-avatar">
+            <div class="avatar-circle">
+                {{ user.username|slice:":1"|upper }}
             </div>
+        </div>
+        <div class="profile-info">
+            <h1 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h1>
+            <p class="profile-username">@{{ user.username }}</p>
+            <p class="profile-email">{{ user.email }}</p>
+            {% if user.bio %}
+            <p class="profile-bio">{{ user.bio }}</p>
+            {% endif %}
+            <button class="edit-profile-btn" onclick="toggleEditMode()">Edit Profile</button>
+        </div>
+    </section>
 
-            <!-- Bio -->
-            <div class="form-section">
-                <label>Bio</label>
-                <textarea name="bio" rows="3"
-                          placeholder="Tell us about yourself...">{{ user.profile.bio }}</textarea>
-            </div>
+    <!-- Two Column Layout -->
+    <div class="profile-grid">
 
-            <!-- Preferences -->
-            <div class="form-section">
-                <label>Travel Preferences</label>
+        <!-- Left Column -->
+        <div class="profile-left">
 
-                <div class="preferences-options">
-                    {% for pref in prefs_list %}
-                        <label class="preference-option">
-                            <input type="checkbox"
-                                   class="pref-checkbox"
-                                   value="{{ pref }}">
-                            <span>{{ pref }}</span>
-                        </label>
-                    {% endfor %}
+            <!-- About Me Section -->
+            <section class="about-card">
+                <h2>About Me</h2>
+                <div class="about-item">
+                    <span class="about-label">📍 Location:</span>
+                    <span class="about-value">{{ user.location|default:"Not specified" }}</span>
+                </div>
+                <div class="about-item">
+                    <span class="about-label">📞 Phone:</span>
+                    <span class="about-value">{{ user.phone|default:"Not specified" }}</span>
+                </div>
+                <div class="about-item">
+                    <span class="about-label">📆 Member Since:</span>
+                    <span class="about-value">{{ user.date_joined|date:"F Y" }}</span>
                 </div>
 
-                <!-- Hidden field storing CSV list -->
-                <input type="hidden"
-                       name="preferences"
-                       id="preferences-input"
-                       value="{{ user.profile.preferences }}">
+                <h3 class="preferences-title">Travel Preferences</h3>
+                <div class="preferences-tags">
+                    {% if user.preferences %}
+                        {% for pref in user.preferences.split %}
+                            <span class="pref-tag">{{ pref }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="about-value">No preferences set</span>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- Quick Settings -->
+            <section class="settings-card">
+                <h2>Quick Settings</h2>
+                <a href="#" class="settings-link" onclick="toggleEditMode()">
+                    <span>✏️</span> Edit Profile
+                </a>
+                <a href="#" class="settings-link">
+                    <span>🔒</span> Change Password
+                </a>
+                <a href="#" class="settings-link">
+                    <span>⚙️</span> Account Settings
+                </a>
+                <form method="POST" action="{% url 'logout' %}" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="settings-link logout-link">
+                        <span>🚪</span> Logout
+                    </button>
+                </form>
+            </section>
+
+        </div>
+
+        <!-- Right Column -->
+        <div class="profile-right">
+
+            <!-- Upcoming Trips Section -->
+            <section class="trips-card">
+                <div class="section-header">
+                    <h2>Upcoming Trips</h2>
+                    <a href="#" class="view-all-link">View All</a>
+                </div>
+
+                {% if upcoming_trips_list %}
+                    <div class="trips-list">
+                        {% for trip in upcoming_trips_list %}
+                        <div class="trip-item">
+                            <div class="trip-thumbnail">
+                                <span class="trip-icon">🌍</span>
+                            </div>
+                            <div class="trip-details">
+                                <h4 class="trip-name">{{ trip.destination }}</h4>
+                                <p class="trip-date">{{ trip.start_date|date:"M d, Y" }} - {{ trip.end_date|date:"M d, Y" }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty-state">No upcoming trips planned yet. Start planning your next adventure!</p>
+                {% endif %}
+            </section>
+
+            <!-- Past Trips Section -->
+            <section class="trips-card">
+                <div class="section-header">
+                    <h2>Past Trips</h2>
+                    <a href="#" class="view-all-link">View All</a>
+                </div>
+
+                {% if past_trips_list %}
+                    <div class="trips-list">
+                        {% for trip in past_trips_list %}
+                        <div class="trip-item">
+                            <div class="trip-thumbnail">
+                                <span class="trip-icon">📸</span>
+                            </div>
+                            <div class="trip-details">
+                                <h4 class="trip-name">{{ trip.destination }}</h4>
+                                <p class="trip-date">{{ trip.start_date|date:"M d, Y" }} - {{ trip.end_date|date:"M d, Y" }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty-state">No past trips recorded yet.</p>
+                {% endif %}
+            </section>
+
+        </div>
+
+    </div>
+
+    <!-- Edit Profile Modal (Hidden by default) -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Profile</h2>
+                <button class="close-btn" onclick="toggleEditMode()">&times;</button>
             </div>
 
-            <button class="save-btn" type="submit">Save Changes</button>
+            <form method="POST" action="">
+                {% csrf_token %}
 
-        </form>
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" name="first_name" value="{{ user.first_name }}" placeholder="First name">
+                </div>
+
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" name="last_name" value="{{ user.last_name }}" placeholder="Last name">
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" value="{{ user.email }}" placeholder="Email address">
+                </div>
+
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" name="phone" value="{{ user.phone }}" placeholder="Phone number">
+                </div>
+
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea name="bio" rows="4" placeholder="Tell us about yourself...">{{ user.bio }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Travel Preferences</label>
+                    <div class="preferences-options">
+                        {% for pref in prefs_list %}
+                            <label class="preference-option">
+                                <input type="checkbox" class="pref-checkbox" value="{{ pref }}">
+                                <span>{{ pref }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" name="preferences" id="preferences-input" value="{{ user.preferences }}">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="toggleEditMode()">Cancel</button>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </div>
+            </form>
+        </div>
     </div>
+
 </div>
 
 <!-- JavaScript -->
 <script>
+function toggleEditMode() {
+    const modal = document.getElementById('editModal');
+    modal.classList.toggle('show');
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('editModal');
+    if (event.target === modal) {
+        modal.classList.remove('show');
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const checkboxes = document.querySelectorAll(".pref-checkbox");
     const input = document.getElementById("preferences-input");

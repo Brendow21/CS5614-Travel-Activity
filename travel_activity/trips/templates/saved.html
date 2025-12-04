@@ -2,29 +2,213 @@
 {% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'saved_activities.css' %}">
+<link rel="stylesheet" href="{% static 'saved.css' %}">
 
 <div class="saved-container">
-    <h1>{{ user.name }}'s Saved Activities</h1>
 
+    <!-- Page Header -->
+    <header class="saved-header">
+        <div class="header-content">
+            <h1>My Saved Activities</h1>
+            <p class="subtitle">Trips and activities you've bookmarked</p>
+        </div>
+        <div class="header-stats">
+            <span class="stat-badge">{{ saved_activities|length }} Saved</span>
+        </div>
+    </header>
+
+    <!-- Filter and Sort Section -->
+    <section class="controls-section">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="tourist_attraction">Attractions</button>
+            <button class="filter-btn" data-filter="restaurant">Restaurants</button>
+            <button class="filter-btn" data-filter="museum">Museums</button>
+            <button class="filter-btn" data-filter="park">Parks</button>
+        </div>
+
+        <div class="sort-controls">
+            <label for="sort-select">Sort by:</label>
+            <select id="sort-select" class="sort-dropdown">
+                <option value="recent">Recently Saved</option>
+                <option value="alphabetical">Alphabetical</option>
+                <option value="rating">Highest Rated</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+            </select>
+        </div>
+    </section>
+
+    <!-- Saved Activities Grid -->
     {% if saved_activities %}
-        <div class="activities-grid">
+        <div class="activities-grid" id="activities-grid">
             {% for saved in saved_activities %}
-                <div class="activity-card">
-                    <h2>{{ saved.activity.title }}</h2>
-                    <p><strong>Category:</strong> {{ saved.activity.category }}</p>
-                    <p><strong>Location:</strong> {{ saved.activity.location }}</p>
-                    <p><strong>Cost:</strong> ${{ saved.activity.cost }}</p>
-                    {% if saved.activity.rating %}
-                        <p><strong>Rating:</strong> {{ saved.activity.rating }}/5</p>
+            <div class="activity-card"
+                 data-category="{{ saved.activity.category }}"
+                 data-saved-date="{{ saved.saved_at.timestamp }}"
+                 data-title="{{ saved.activity.title }}"
+                 data-rating="{{ saved.activity.rating|default:0 }}"
+                 data-price="{{ saved.activity.cost }}">
+
+                <!-- Card Image -->
+                <div class="card-image">
+                    {% if saved.activity.photo_url %}
+                        <img src="{{ saved.activity.photo_url }}" alt="{{ saved.activity.title }}">
+                    {% else %}
+                        <div class="placeholder-image">
+                            <span class="placeholder-icon">📍</span>
+                        </div>
                     {% endif %}
-                    <p><strong>Saved At:</strong> {{ saved.saved_at|date:"M d, Y H:i" }}</p>
-                    <p>{{ saved.activity.description|truncatechars:100 }}</p>
+                    <button class="heart-btn active" onclick="toggleSave(this, {{ saved.activity.activity_id }})">
+                        <span>❤️</span>
+                    </button>
+                    <span class="category-tag">{{ saved.activity.category }}</span>
                 </div>
+
+                <!-- Card Content -->
+                <div class="card-content">
+                    <h3 class="card-title">{{ saved.activity.title }}</h3>
+                    <p class="card-location">
+                        <span class="location-icon">📍</span>
+                        {{ saved.activity.location }}
+                    </p>
+
+                    {% if saved.activity.description %}
+                    <p class="card-description">{{ saved.activity.description|truncatechars:100 }}</p>
+                    {% endif %}
+
+                    <div class="card-meta">
+                        {% if saved.activity.rating %}
+                        <span class="rating">
+                            <span class="star">⭐</span>
+                            {{ saved.activity.rating }}
+                        </span>
+                        {% endif %}
+
+                        <span class="price">${{ saved.activity.cost }}</span>
+
+                        {% if saved.activity.duration %}
+                        <span class="duration">
+                            <span class="clock-icon">🕐</span>
+                            {{ saved.activity.duration }} min
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-footer">
+                        <span class="saved-date">Saved {{ saved.saved_at|timesince }} ago</span>
+                        <button class="view-details-btn" onclick="viewDetails({{ saved.activity.activity_id }})">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
         </div>
     {% else %}
-        <p>You have not saved any activities yet.</p>
+        <!-- Empty State -->
+        <div class="empty-state">
+            <div class="empty-icon">🔖</div>
+            <h2>No saved activities yet</h2>
+            <p>Browse activities and add your favorites to view them here.</p>
+            <a href="{% url 'search' %}" class="explore-btn">Explore Activities</a>
+        </div>
     {% endif %}
+
 </div>
+
+<!-- JavaScript for Filtering and Sorting -->
+<script>
+// Filter functionality
+const filterBtns = document.querySelectorAll('.filter-btn');
+const activityCards = document.querySelectorAll('.activity-card');
+
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Update active button
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.dataset.filter;
+
+        // Filter cards
+        activityCards.forEach(card => {
+            if (filter === 'all' || card.dataset.category.includes(filter)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+
+// Sort functionality
+const sortSelect = document.getElementById('sort-select');
+const grid = document.getElementById('activities-grid');
+
+sortSelect.addEventListener('change', () => {
+    const sortValue = sortSelect.value;
+    const cardsArray = Array.from(activityCards);
+
+    cardsArray.sort((a, b) => {
+        switch(sortValue) {
+            case 'recent':
+                return parseFloat(b.dataset.savedDate) - parseFloat(a.dataset.savedDate);
+            case 'alphabetical':
+                return a.dataset.title.localeCompare(b.dataset.title);
+            case 'rating':
+                return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+            case 'price-low':
+                return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+            case 'price-high':
+                return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+            default:
+                return 0;
+        }
+    });
+
+    // Re-append sorted cards
+    cardsArray.forEach(card => grid.appendChild(card));
+});
+
+// Toggle save (remove from saved)
+function toggleSave(btn, activityId) {
+    if (confirm('Remove this activity from your saved list?')) {
+        // Make AJAX call to remove
+        fetch(`/api/activities/${activityId}/unsave/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Remove card from DOM
+            btn.closest('.activity-card').remove();
+
+            // Update counter
+            const badge = document.querySelector('.stat-badge');
+            const count = document.querySelectorAll('.activity-card').length;
+            badge.textContent = `${count} Saved`;
+
+            // Show empty state if no cards left
+            if (count === 0) {
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to remove activity. Please try again.');
+        });
+    }
+}
+
+// View details
+function viewDetails(activityId) {
+    // You can implement a modal or redirect to detail page
+    window.location.href = `/activities/${activityId}/`;
+}
+</script>
+
 {% endblock %}
