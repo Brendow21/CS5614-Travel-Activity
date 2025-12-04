@@ -9,9 +9,13 @@
     <!-- Profile Header -->
     <section class="profile-header">
         <div class="profile-avatar">
-            <div class="avatar-circle">
-                {{ user.username|slice:":1"|upper }}
-            </div>
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="{{ user.username }}" class="profile-pic-img">
+            {% else %}
+                <div class="avatar-circle">
+                    {{ user.username|slice:":1"|upper }}
+                </div>
+            {% endif %}
         </div>
         <div class="profile-info">
             <h1 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h1>
@@ -147,8 +151,19 @@
                 <button class="close-btn" onclick="toggleEditMode()">&times;</button>
             </div>
 
-            <form method="POST" action="">
+            <form method="POST" action="" enctype="multipart/form-data">
                 {% csrf_token %}
+
+                <div class="form-group">
+                    <label>Profile Picture</label>
+                    {% if user.profile_picture %}
+                        <div class="current-picture">
+                            <img src="{{ user.profile_picture.url }}" alt="Current profile picture" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
+                        </div>
+                    {% endif %}
+                    <input type="file" name="profile_picture" accept="image/*" class="file-input">
+                    <small style="color: #666; display: block; margin-top: 5px;">Upload a new profile picture (JPG, PNG)</small>
+                </div>
 
                 <div class="form-group">
                     <label>First Name</label>

@@ -184,6 +184,7 @@ background-color: #005fcc;
     transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .activity-card:hover {
@@ -221,10 +222,226 @@ background-color: #005fcc;
     color: #ff9800;
 }
 
-.activity-info .types, 
-.activity-info .hours, 
-.activity-info .price, 
+.activity-info .types,
+.activity-info .hours,
+.activity-info .price,
 .activity-info .distance {
     font-size: 13px;
     color: #777;
+}
+
+/* Heart Save Button */
+.activity-card .heart-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+}
+
+.activity-card .heart-btn:hover {
+    transform: scale(1.1);
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.activity-card .heart-btn .heart-icon {
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+
+.activity-card .heart-btn.saved .heart-icon {
+    animation: heartBeat 0.3s ease;
+}
+
+/* Trip Selection Modal */
+.trip-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.trip-modal-content {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.trip-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.trip-modal-header h2 {
+    margin: 0;
+    color: #222;
+    font-size: 1.5rem;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: #333;
+}
+
+.trip-modal-body {
+    padding: 25px;
+}
+
+.activity-name-display {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.trip-list {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.trip-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.trip-card:hover {
+    border-color: #0073b1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 115, 177, 0.2);
+}
+
+.trip-card h4 {
+    margin: 0 0 8px 0;
+    color: #222;
+    font-size: 1.1rem;
+}
+
+.trip-card p {
+    margin: 4px 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.trip-card .activity-count {
+    color: #0073b1;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.no-trips {
+    text-align: center;
+    color: #999;
+    padding: 30px;
+    font-style: italic;
+}
+
+.create-new-trip-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #0073b1 0%, #005f91 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.create-new-trip-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 115, 177, 0.3);
+}
+
+#create-trip-form {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+#create-trip-form h3 {
+    margin: 0 0 15px 0;
+    color: #222;
+}
+
+#create-trip-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+#create-trip-form input:focus {
+    outline: none;
+    border-color: #0073b1;
+}
+
+#create-trip-form button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: all 0.2s ease;
+}
+
+#create-trip-form button:first-of-type {
+    background: #0073b1;
+    color: white;
+}
+
+#create-trip-form button:first-of-type:hover {
+    background: #005f91;
+}
+
+#create-trip-form button:last-of-type {
+    background: #e0e0e0;
+    color: #333;
+}
+
+#create-trip-form button:last-of-type:hover {
+    background: #d0d0d0;
 }

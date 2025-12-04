@@ -9,98 +9,111 @@
     <!-- Page Header -->
     <header class="saved-header">
         <div class="header-content">
-            <h1>My Saved Activities</h1>
-            <p class="subtitle">Trips and activities you've bookmarked</p>
+            <h1>My Trips</h1>
+            <p class="subtitle">Plan and organize your travel adventures</p>
         </div>
         <div class="header-stats">
-            <span class="stat-badge">{{ saved_activities|length }} Saved</span>
+            <span class="stat-badge">{{ trips_with_activities|length }} Trip{{ trips_with_activities|length|pluralize }}</span>
         </div>
     </header>
 
-    <!-- Filter and Sort Section -->
-    <section class="controls-section">
-        <div class="filter-buttons">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="tourist_attraction">Attractions</button>
-            <button class="filter-btn" data-filter="restaurant">Restaurants</button>
-            <button class="filter-btn" data-filter="museum">Museums</button>
-            <button class="filter-btn" data-filter="park">Parks</button>
-        </div>
-
-        <div class="sort-controls">
-            <label for="sort-select">Sort by:</label>
-            <select id="sort-select" class="sort-dropdown">
-                <option value="recent">Recently Saved</option>
-                <option value="alphabetical">Alphabetical</option>
-                <option value="rating">Highest Rated</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-            </select>
-        </div>
-    </section>
-
-    <!-- Saved Activities Grid -->
-    {% if saved_activities %}
-        <div class="activities-grid" id="activities-grid">
-            {% for saved in saved_activities %}
-            <div class="activity-card"
-                 data-category="{{ saved.activity.category }}"
-                 data-saved-date="{{ saved.saved_at.timestamp }}"
-                 data-title="{{ saved.activity.title }}"
-                 data-rating="{{ saved.activity.rating|default:0 }}"
-                 data-price="{{ saved.activity.cost }}">
-
-                <!-- Card Image -->
-                <div class="card-image">
-                    {% if saved.activity.photo_url %}
-                        <img src="{{ saved.activity.photo_url }}" alt="{{ saved.activity.title }}">
-                    {% else %}
-                        <div class="placeholder-image">
-                            <span class="placeholder-icon">📍</span>
+    <!-- Trips List -->
+    {% if trips_with_activities %}
+        <div class="trips-list">
+            {% for trip_data in trips_with_activities %}
+            <div class="trip-section">
+                <!-- Trip Header -->
+                <div class="trip-header" onclick="toggleTripActivities({{ trip_data.trip.id }})">
+                    <div class="trip-info">
+                        <h2 class="trip-title">{{ trip_data.trip.destination }}</h2>
+                        <div class="trip-meta">
+                            <span class="trip-dates">
+                                📅 {{ trip_data.trip.start_date|date:"M d, Y" }} - {{ trip_data.trip.end_date|date:"M d, Y" }}
+                            </span>
+                            <span class="trip-activity-count">
+                                🎯 {{ trip_data.activity_count }} activit{{ trip_data.activity_count|pluralize:"y,ies" }}
+                            </span>
                         </div>
-                    {% endif %}
-                    <button class="heart-btn active" onclick="toggleSave(this, {{ saved.activity.activity_id }})">
-                        <span>❤️</span>
+                    </div>
+                    <button class="expand-btn" id="expand-btn-{{ trip_data.trip.id }}">
+                        <span>▼</span>
                     </button>
-                    <span class="category-tag">{{ saved.activity.category }}</span>
                 </div>
 
-                <!-- Card Content -->
-                <div class="card-content">
-                    <h3 class="card-title">{{ saved.activity.title }}</h3>
-                    <p class="card-location">
-                        <span class="location-icon">📍</span>
-                        {{ saved.activity.location }}
-                    </p>
+                <!-- Activities Grid (Collapsible) -->
+                <div class="activities-grid collapsed" id="activities-{{ trip_data.trip.id }}">
+                    {% if trip_data.activities %}
+                        {% for trip_activity in trip_data.activities %}
+                        <div class="activity-card" data-activity-id="{{ trip_activity.activity.activity_id }}">
+                            <!-- Card Image -->
+                            <div class="card-image">
+                                {% if trip_activity.activity.photo_url %}
+                                    <img src="{{ trip_activity.activity.photo_url }}" alt="{{ trip_activity.activity.title }}">
+                                {% else %}
+                                    <div class="placeholder-image">
+                                        <span class="placeholder-icon">📍</span>
+                                    </div>
+                                {% endif %}
+                                <button class="remove-btn" onclick="removeActivity(event, {{ trip_data.trip.id }}, {{ trip_activity.activity.activity_id }})" title="Remove from trip">
+                                    <span>✕</span>
+                                </button>
+                                <span class="category-tag">{{ trip_activity.activity.category }}</span>
+                            </div>
 
-                    {% if saved.activity.description %}
-                    <p class="card-description">{{ saved.activity.description|truncatechars:100 }}</p>
+                            <!-- Card Content -->
+                            <div class="card-content">
+                                <h3 class="card-title">{{ trip_activity.activity.title }}</h3>
+                                <p class="card-location">
+                                    <span class="location-icon">📍</span>
+                                    {{ trip_activity.activity.location }}
+                                </p>
+
+                                <div class="card-meta">
+                                    {% if trip_activity.activity.rating %}
+                                    <span class="rating">
+                                        <span class="star">⭐</span>
+                                        {{ trip_activity.activity.rating }}
+                                    </span>
+                                    {% endif %}
+
+                                    <span class="price">${{ trip_activity.activity.cost }}</span>
+
+                                    {% if trip_activity.activity.duration %}
+                                    <span class="duration">
+                                        <span class="clock-icon">🕐</span>
+                                        {{ trip_activity.activity.duration }} min
+                                    </span>
+                                    {% endif %}
+                                </div>
+
+                                {% if trip_activity.notes %}
+                                <div class="activity-notes">
+                                    <strong>Notes:</strong> {{ trip_activity.notes }}
+                                </div>
+                                {% endif %}
+
+                                <div class="card-footer">
+                                    <span class="added-date">Added {{ trip_activity.added_at|timesince }} ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-activities">
+                            <p>No activities added yet. Start searching and add activities to this trip!</p>
+                            <a href="{% url 'search' %}" class="add-activity-btn">+ Add Activities</a>
+                        </div>
                     {% endif %}
+                </div>
 
-                    <div class="card-meta">
-                        {% if saved.activity.rating %}
-                        <span class="rating">
-                            <span class="star">⭐</span>
-                            {{ saved.activity.rating }}
-                        </span>
-                        {% endif %}
-
-                        <span class="price">${{ saved.activity.cost }}</span>
-
-                        {% if saved.activity.duration %}
-                        <span class="duration">
-                            <span class="clock-icon">🕐</span>
-                            {{ saved.activity.duration }} min
-                        </span>
-                        {% endif %}
-                    </div>
-
-                    <div class="card-footer">
-                        <span class="saved-date">Saved {{ saved.saved_at|timesince }} ago</span>
-                        <button class="view-details-btn" onclick="viewDetails({{ saved.activity.activity_id }})">
-                            View Details
-                        </button>
-                    </div>
+                <!-- Trip Actions -->
+                <div class="trip-actions collapsed" id="actions-{{ trip_data.trip.id }}">
+                    <button class="action-btn search-btn" onclick="window.location.href='{% url 'search' %}'">
+                        + Add More Activities
+                    </button>
+                    <button class="action-btn delete-btn" onclick="deleteTrip({{ trip_data.trip.id }}, '{{ trip_data.trip.destination }}')">
+                        🗑️ Delete Trip
+                    </button>
                 </div>
             </div>
             {% endfor %}
@@ -108,107 +121,165 @@
     {% else %}
         <!-- Empty State -->
         <div class="empty-state">
-            <div class="empty-icon">🔖</div>
-            <h2>No saved activities yet</h2>
-            <p>Browse activities and add your favorites to view them here.</p>
-            <a href="{% url 'search' %}" class="explore-btn">Explore Activities</a>
+            <div class="empty-icon">✈️</div>
+            <h2>No trips planned yet</h2>
+            <p>Start planning your next adventure by creating a trip and adding activities!</p>
+            <a href="{% url 'search' %}" class="explore-btn">Start Planning</a>
         </div>
     {% endif %}
 
 </div>
 
-<!-- JavaScript for Filtering and Sorting -->
+<!-- JavaScript -->
 <script>
-// Filter functionality
-const filterBtns = document.querySelectorAll('.filter-btn');
-const activityCards = document.querySelectorAll('.activity-card');
+// Toggle trip activities visibility
+function toggleTripActivities(tripId) {
+    const activitiesDiv = document.getElementById(`activities-${tripId}`);
+    const actionsDiv = document.getElementById(`actions-${tripId}`);
+    const expandBtn = document.getElementById(`expand-btn-${tripId}`);
 
-filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        // Update active button
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    activitiesDiv.classList.toggle('collapsed');
+    actionsDiv.classList.toggle('collapsed');
 
-        const filter = btn.dataset.filter;
-
-        // Filter cards
-        activityCards.forEach(card => {
-            if (filter === 'all' || card.dataset.category.includes(filter)) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    });
-});
-
-// Sort functionality
-const sortSelect = document.getElementById('sort-select');
-const grid = document.getElementById('activities-grid');
-
-sortSelect.addEventListener('change', () => {
-    const sortValue = sortSelect.value;
-    const cardsArray = Array.from(activityCards);
-
-    cardsArray.sort((a, b) => {
-        switch(sortValue) {
-            case 'recent':
-                return parseFloat(b.dataset.savedDate) - parseFloat(a.dataset.savedDate);
-            case 'alphabetical':
-                return a.dataset.title.localeCompare(b.dataset.title);
-            case 'rating':
-                return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
-            case 'price-low':
-                return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
-            case 'price-high':
-                return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
-            default:
-                return 0;
-        }
-    });
-
-    // Re-append sorted cards
-    cardsArray.forEach(card => grid.appendChild(card));
-});
-
-// Toggle save (remove from saved)
-function toggleSave(btn, activityId) {
-    if (confirm('Remove this activity from your saved list?')) {
-        // Make AJAX call to remove
-        fetch(`/api/activities/${activityId}/unsave/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Remove card from DOM
-            btn.closest('.activity-card').remove();
-
-            // Update counter
-            const badge = document.querySelector('.stat-badge');
-            const count = document.querySelectorAll('.activity-card').length;
-            badge.textContent = `${count} Saved`;
-
-            // Show empty state if no cards left
-            if (count === 0) {
-                location.reload();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Failed to remove activity. Please try again.');
-        });
+    // Rotate arrow
+    if (activitiesDiv.classList.contains('collapsed')) {
+        expandBtn.querySelector('span').textContent = '▼';
+    } else {
+        expandBtn.querySelector('span').textContent = '▲';
     }
 }
 
-// View details
-function viewDetails(activityId) {
-    // You can implement a modal or redirect to detail page
-    window.location.href = `/activities/${activityId}/`;
+// Remove activity from trip
+function removeActivity(event, tripId, activityId) {
+    event.stopPropagation();
+
+    if (!confirm('Remove this activity from the trip?')) {
+        return;
+    }
+
+    fetch(`/api/trips/${tripId}/remove-activity/${activityId}/`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Remove card from DOM
+            const card = event.target.closest('.activity-card');
+            card.remove();
+
+            // Update activity count
+            const activityCountSpan = document.querySelector(`#activities-${tripId}`).closest('.trip-section').querySelector('.trip-activity-count');
+            const currentCount = parseInt(activityCountSpan.textContent.match(/\d+/)[0]);
+            const newCount = currentCount - 1;
+            activityCountSpan.textContent = `🎯 ${newCount} activit${newCount === 1 ? 'y' : 'ies'}`;
+
+            // If no activities left, show empty message
+            if (newCount === 0) {
+                const activitiesGrid = document.getElementById(`activities-${tripId}`);
+                activitiesGrid.innerHTML = `
+                    <div class="empty-activities">
+                        <p>No activities added yet. Start searching and add activities to this trip!</p>
+                        <a href="/search/" class="add-activity-btn">+ Add Activities</a>
+                    </div>
+                `;
+            }
+
+            showNotification('Activity removed from trip');
+        } else {
+            showNotification('Failed to remove activity', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to remove activity', 'error');
+    });
 }
+
+// Delete trip
+function deleteTrip(tripId, tripName) {
+    if (!confirm(`Delete trip "${tripName}"? This will remove all activities from this trip.`)) {
+        return;
+    }
+
+    fetch(`/api/trips/${tripId}/delete/`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showNotification('Trip deleted');
+            location.reload();
+        } else {
+            showNotification('Failed to delete trip', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to delete trip', 'error');
+    });
+}
+
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Helper function to show notification
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#0073b1' : '#ff4757'};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Add CSS animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
 </script>
 
 {% endblock %}

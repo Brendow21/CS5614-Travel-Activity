@@ -18,9 +18,15 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from django.conf import settings
+from django.conf.urls.static import static
 # Import the views module from the trips app
 from trips import views
-from trips.views import ActivityViewSet, generate_recommendations, user_saved_activities
+from trips.views import (
+    ActivityViewSet, generate_recommendations, user_saved_activities,
+    save_activity_from_search, user_trips, create_trip, add_activity_to_trip,
+    remove_activity_from_trip
+)
 
 router = DefaultRouter()
 router.register(r'activities', ActivityViewSet, basename='activity')
@@ -45,4 +51,15 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/recommendations/generate/', generate_recommendations, name='generate-recommendations'),
     path('api/users/<int:user_id>/saved/', user_saved_activities, name='user-saved-activities'),
+    path('api/activities/save-from-search/', save_activity_from_search, name='save-activity-from-search'),
+
+    # Trip API routes
+    path('api/trips/user-trips/', user_trips, name='user-trips'),
+    path('api/trips/create/', create_trip, name='create-trip'),
+    path('api/trips/add-activity/', add_activity_to_trip, name='add-activity-to-trip'),
+    path('api/trips/<int:trip_id>/remove-activity/<int:activity_id>/', remove_activity_from_trip, name='remove-activity-from-trip'),
 ]
+
+# Serve media files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

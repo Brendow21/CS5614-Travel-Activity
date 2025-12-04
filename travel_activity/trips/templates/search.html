@@ -65,11 +65,20 @@
         <div id="results" class="activity-cards">
             {% if results %}
                 {% for activity in results %}
-                    <div class="activity-card activity-item" 
-                         data-lat="{{ activity.location.lat }}" 
+                    <div class="activity-card activity-item"
+                         data-lat="{{ activity.location.lat }}"
                          data-lng="{{ activity.location.lng }}"
-                         data-name="{{ activity.name }}">
+                         data-name="{{ activity.name }}"
+                         data-place-id="{{ activity.place_id }}"
+                         data-address="{{ activity.address }}"
+                         data-rating="{{ activity.rating|default:0 }}"
+                         data-price="{{ activity.price_level|default:0 }}"
+                         data-types="{{ activity.types|join:',' }}"
+                         data-photo="{% if activity.photos %}{{ activity.photos.0 }}{% endif %}">
                         {% if activity.photos %}<img src="{{ activity.photos.0 }}" class="activity-photo" />{% endif %}
+                        <button class="heart-btn" onclick="toggleSaveActivity(this, event)" title="Add to trip">
+                            <span class="heart-icon">+</span>
+                        </button>
                         <div class="activity-info">
                             <h3>{{ activity.name }}</h3>
                             {% if activity.address %}<p class="address">{{ activity.address }}</p>{% endif %}
@@ -85,6 +94,33 @@
         </div>
     </aside>
 
+</div>
+
+<!-- Trip Selection Modal -->
+<div id="trip-modal" class="trip-modal" style="display: none;">
+    <div class="trip-modal-content">
+        <div class="trip-modal-header">
+            <h2>Add to Trip</h2>
+            <button class="close-modal" onclick="closeTripModal()">&times;</button>
+        </div>
+        <div class="trip-modal-body">
+            <p class="activity-name-display"></p>
+            <div class="trip-list" id="trip-list">
+                <!-- Trips will be loaded here -->
+            </div>
+            <button class="create-new-trip-btn" onclick="showCreateTripForm()">
+                + Create New Trip
+            </button>
+            <div id="create-trip-form" style="display: none;">
+                <h3>New Trip</h3>
+                <input type="text" id="new-trip-name" placeholder="Trip name (e.g., Ireland 2025)" required>
+                <input type="date" id="new-trip-start" required>
+                <input type="date" id="new-trip-end" required>
+                <button onclick="createNewTrip()">Create Trip</button>
+                <button onclick="cancelCreateTrip()">Cancel</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Scripts -->
@@ -176,6 +212,236 @@ function applyFilters() {
         card.style.display = (priceMatch && categoryMatch && ratingMatch) ? '' : 'none';
     });
 }
+
+// Global variable to store current activity data
+let currentActivityData = null;
+let currentHeartBtn = null;
+
+// Toggle save activity - now shows trip selection modal
+function toggleSaveActivity(btn, event) {
+    event.stopPropagation(); // Prevent card click event
+
+    const card = btn.closest('.activity-item');
+    const heartIcon = btn.querySelector('.heart-icon');
+
+    // Check if already saved (checkmark)
+    const isSaved = heartIcon.textContent === '✓';
+
+    if (isSaved) {
+        alert('This activity is already in one of your trips!');
+        return;
+    }
+
+    // Store activity data
+    currentActivityData = {
+        place_id: card.dataset.placeId,
+        name: card.dataset.name,
+        address: card.dataset.address,
+        lat: parseFloat(card.dataset.lat),
+        lng: parseFloat(card.dataset.lng),
+        rating: parseFloat(card.dataset.rating) || null,
+        price_level: card.dataset.price || null,
+        types: card.dataset.types.split(','),
+        photo_url: card.dataset.photo || null
+    };
+
+    currentHeartBtn = btn;
+
+    // Show modal and load trips
+    showTripModal();
+}
+
+// Show trip selection modal
+function showTripModal() {
+    const modal = document.getElementById('trip-modal');
+    const activityName = document.querySelector('.activity-name-display');
+
+    activityName.textContent = `Add "${currentActivityData.name}" to:`;
+    modal.style.display = 'flex';
+
+    // Load user's trips
+    loadUserTrips();
+}
+
+// Close trip modal
+function closeTripModal() {
+    const modal = document.getElementById('trip-modal');
+    modal.style.display = 'none';
+    document.getElementById('create-trip-form').style.display = 'none';
+}
+
+// Load user's trips
+function loadUserTrips() {
+    fetch('/api/trips/user-trips/')
+    .then(response => response.json())
+    .then(data => {
+        const tripList = document.getElementById('trip-list');
+        tripList.innerHTML = '';
+
+        if (data.trips && data.trips.length > 0) {
+            data.trips.forEach(trip => {
+                const tripCard = document.createElement('div');
+                tripCard.className = 'trip-card';
+                tripCard.innerHTML = `
+                    <h4>${trip.destination}</h4>
+                    <p>${trip.start_date} to ${trip.end_date}</p>
+                    <p class="activity-count">${trip.activity_count || 0} activities</p>
+                `;
+                tripCard.onclick = () => addActivityToTrip(trip.id);
+                tripList.appendChild(tripCard);
+            });
+        } else {
+            tripList.innerHTML = '<p class="no-trips">No trips yet. Create your first trip!</p>';
+        }
+    })
+    .catch(error => {
+        console.error('Error loading trips:', error);
+        showNotification('Failed to load trips', 'error');
+    });
+}
+
+// Add activity to selected trip
+function addActivityToTrip(tripId) {
+    fetch('/api/trips/add-activity/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            trip_id: tripId,
+            activity_data: currentActivityData
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Update icon to checkmark
+            const heartIcon = currentHeartBtn.querySelector('.heart-icon');
+            heartIcon.textContent = '✓';
+            currentHeartBtn.classList.add('saved');
+
+            showNotification(`Added to ${data.trip_name}!`);
+            closeTripModal();
+        } else {
+            showNotification(data.message || 'Error adding activity', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to add activity. Please try again.', 'error');
+    });
+}
+
+// Show create trip form
+function showCreateTripForm() {
+    document.getElementById('create-trip-form').style.display = 'block';
+}
+
+// Cancel create trip
+function cancelCreateTrip() {
+    document.getElementById('create-trip-form').style.display = 'none';
+    document.getElementById('new-trip-name').value = '';
+    document.getElementById('new-trip-start').value = '';
+    document.getElementById('new-trip-end').value = '';
+}
+
+// Create new trip
+function createNewTrip() {
+    const name = document.getElementById('new-trip-name').value;
+    const startDate = document.getElementById('new-trip-start').value;
+    const endDate = document.getElementById('new-trip-end').value;
+
+    if (!name || !startDate || !endDate) {
+        alert('Please fill in all fields');
+        return;
+    }
+
+    fetch('/api/trips/create/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            destination: name,
+            start_date: startDate,
+            end_date: endDate
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showNotification('Trip created!');
+            cancelCreateTrip();
+            loadUserTrips();
+        } else {
+            showNotification(data.message || 'Error creating trip', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to create trip', 'error');
+    });
+}
+
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Helper function to show notification
+function showNotification(message, type = 'success') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#0073b1' : '#ff4757'};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+
+    document.body.appendChild(notification);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Add CSS animation for notifications
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
 
 </script>
 
