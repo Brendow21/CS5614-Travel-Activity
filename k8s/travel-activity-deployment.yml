@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: travel-activity
+  namespace: wanderly
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: travel-activity
+  template:
+    metadata:
+      labels:
+        app: travel-activity
+    spec:
+      containers:
+        - name: travel-activity-container
+          image: brendow21/travel-activity:latest
+          ports:
+            - containerPort: 8000

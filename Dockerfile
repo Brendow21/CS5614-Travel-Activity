@@ -1,35 +1,24 @@
-# Use official Python base image
 FROM python:3.11-slim
 
-# Set environment vars for Python
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
-# Set work directory
+# Set working directory
 WORKDIR /app
 
-# Install system dependencies (required for psycopg2, sqlite, etc)
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    curl \
-    && apt-get clean
-
-# Copy dependency list first for caching
-COPY requirements.txt /app/
-
-# Install Python dependencies
+# Copy requirements and install
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy entire Django project
-COPY . /app/
+# Copy project code
+COPY travel_activity/ ./travel_activity/
 
-# Expose application port
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV DJANGO_SETTINGS_MODULE=travel_activity.settings
+
+# Collect static files (optional)
+# RUN python manage.py collectstatic --noinput
+
+# Expose port
 EXPOSE 8000
 
-# Set working directory to Django project folder that contains manage.py
-WORKDIR /app/travel_activity
-
-# Run migrations automatically (optional but recommended)
-# Then start Gunicorn
-CMD ["gunicorn", "travel_activity.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Run server
+CMD ["python", "travel_activity/manage.py", "runserver", "0.0.0.0:8000"]
