@@ -14,6 +14,6 @@ RUN pip install --no-cache-dir Pillow
 EXPOSE 8000
 
 # Run Gunicorn
-ENV PYTHONPATH=/app/src
+ENV DJANGO_SETTINGS_MODULE=travel_activity.travel_activity.settings
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "travel_activity.travel_activity.wsgi:application"]
 
