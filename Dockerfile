@@ -1,19 +1,23 @@
 FROM python:3.11-slim
 
-# Set working directory to outer travel_activity
-WORKDIR /app
+# Set working directory to folder containing manage.py
+WORKDIR /app/travel_activity
 
-# Copy all project files
+# Copy all project files into container
 COPY . /app
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 RUN pip install --no-cache-dir Pillow
 
-# Expose port
+# Expose Django port
 EXPOSE 8000
 
-# Run Gunicorn
-ENV DJANGO_SETTINGS_MODULE=travel_activity.travel_activity.settings
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "travel_activity.travel_activity.wsgi:application"]
+# Environment variables
+ENV PYTHONPATH=/app/travel_activity
+ENV DJANGO_SETTINGS_MODULE=travel_activity.settings
+ENV DJANGO_AUTORELOAD=0
+ENV PYTHONUNBUFFERED=1
 
+# Run Gunicorn
+CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "travel_activity.wsgi:application"]

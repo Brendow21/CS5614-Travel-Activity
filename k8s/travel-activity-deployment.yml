@@ -3,8 +3,10 @@ kind: Deployment
 metadata:
   name: travel-activity
   namespace: wanderly
+  labels:
+    app: travel-activity
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: travel-activity
@@ -15,6 +17,26 @@ spec:
     spec:
       containers:
         - name: travel-activity-container
-          image: brendow21/travel-activity:latest
+          image: your-dockerhub-username/travel-activity:latest
           ports:
             - containerPort: 8000
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: "travel_activity.settings"
+            - name: PYTHONPATH
+              value: "/app/travel_activity"
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+          # Optional: Increase file descriptors if needed
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              add: ["IPC_LOCK"]
