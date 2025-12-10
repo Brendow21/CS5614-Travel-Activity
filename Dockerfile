@@ -19,4 +19,6 @@ ENV PYTHONPATH=/app
 EXPOSE 8000
 
 # Run Django dev server
-CMD ["python", "travel_activity/manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "travel_activity.wsgi:application"]
+
+
