@@ -1,7 +1,7 @@
 FROM python:3.11-slim
 
 # Set working directory to outer travel_activity
-WORKDIR /app/travel_activity
+WORKDIR /app
 
 # Copy all project files
 COPY . /app/travel_activity
@@ -14,5 +14,6 @@ RUN pip install --no-cache-dir Pillow
 EXPOSE 8000
 
 # Run Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "travel_activity.travel_activity.wsgi:application"]
+ENV PYTHONPATH=/app/src
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "travel_activity.wsgi:application"]
 
