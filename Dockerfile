@@ -23,4 +23,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends procps \
     && ulimit -n 65536
 
 # Run Gunicorn
-CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "travel_activity.wsgi:application"]
+CMD ["gunicorn", "--workers", "1", "--bind", "0.0.0.0:8000", "travel_activity.wsgi:application"]
+

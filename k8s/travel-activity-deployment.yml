@@ -3,10 +3,8 @@ kind: Deployment
 metadata:
   name: travel-activity
   namespace: wanderly
-  labels:
-    app: travel-activity
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: travel-activity
@@ -15,27 +13,23 @@ spec:
       labels:
         app: travel-activity
     spec:
+      securityContext:
+        sysctls:
+          - name: fs.inotify.max_user_watches
+            value: "1048576"
       containers:
-        - name: travel-activity
-          image: brendow21/travel-activity:latest
-          ports:
-            - containerPort: 8000
-          env:
-            - name: DJANGO_SETTINGS_MODULE
-              value: travel_activity.settings
-            - name: PYTHONUNBUFFERED
-              value: "1"
-          command: ["/bin/sh"]
-          args:
-            - "-c"
-            - |
-              ulimit -n 1048576
-              exec gunicorn --bind 0.0.0.0:8000 travel_activity.wsgi:application
-          resources:
-            limits:
-              cpu: "500m"
-              memory: "512Mi"
-            requests:
-              cpu: "250m"
-              memory: "256Mi"
-      restartPolicy: Always
+      - name: travel-activity
+        image: brendow21/travel-activity:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DJANGO_SETTINGS_MODULE
+          value: travel_activity.settings
+        - name: PYTHONPATH
+          value: /app/travel_activity
+        - name: DJANGO_AUTORELOAD
+          value: "0"
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        command: ["gunicorn"]
+        args: ["--workers", "1", "--bind", "0.0.0.0:8000", "travel_activity.wsgi:application"]
