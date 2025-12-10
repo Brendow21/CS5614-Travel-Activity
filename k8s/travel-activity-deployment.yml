@@ -16,15 +16,21 @@ spec:
         app: travel-activity
     spec:
       containers:
-        - name: travel-activity-container
-          image: your-dockerhub-username/travel-activity:latest
+        - name: travel-activity
+          image: brendow21/travel-activity:latest
           ports:
             - containerPort: 8000
           env:
             - name: DJANGO_SETTINGS_MODULE
-              value: "travel_activity.settings"
-            - name: PYTHONPATH
-              value: "/app/travel_activity"
+              value: travel_activity.settings
+            - name: PYTHONUNBUFFERED
+              value: "1"
+          command: ["/bin/sh"]
+          args:
+            - "-c"
+            - |
+              ulimit -n 1048576
+              exec gunicorn --bind 0.0.0.0:8000 travel_activity.wsgi:application
           resources:
             limits:
               cpu: "500m"
@@ -32,11 +38,4 @@ spec:
             requests:
               cpu: "250m"
               memory: "256Mi"
-          # Optional: Increase file descriptors if needed
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            runAsNonRoot: true
-            allowPrivilegeEscalation: false
-            capabilities:
-              add: ["IPC_LOCK"]
+      restartPolicy: Always

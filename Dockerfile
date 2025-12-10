@@ -19,5 +19,8 @@ ENV DJANGO_SETTINGS_MODULE=travel_activity.settings
 ENV DJANGO_AUTORELOAD=0
 ENV PYTHONUNBUFFERED=1
 
+RUN apt-get update && apt-get install -y --no-install-recommends procps \
+    && ulimit -n 65536
+
 # Run Gunicorn
 CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "travel_activity.wsgi:application"]
