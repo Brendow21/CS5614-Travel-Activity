@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-2lj^nj+vi#^b^3y671li7shli!lg=opj4boqeodmqicicopv0z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['Brendow.pythonanywhere.com']
+# ALLOWED_HOSTS = ['Brendow.pythonanywhere.com']
+ALLOWED_HOSTS = []
+
 
 
 # Application definition
@@ -117,11 +119,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = "/home/Brendow/CS5614-Travel-Activity/static"
+# STATIC_ROOT = "/home/Brendow/CS5614-Travel-Activity/static"
 
 # Media files (uploads)
 MEDIA_URL = '/media/'
-MEDIA_ROOT  = "/home/Brendow/CS5614-Travel-Activity/media"
+# MEDIA_ROOT  = "/home/Brendow/CS5614-Travel-Activity/media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
