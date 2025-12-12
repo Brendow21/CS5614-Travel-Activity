@@ -298,7 +298,6 @@ def profile_view(request):
         user.bio = request.POST.get('bio', '')
         user.phone = request.POST.get('phone', '')
 
-        # Handle profile picture upload
         if 'profile_picture' in request.FILES:
             user.profile_picture = request.FILES['profile_picture']
 
@@ -503,6 +502,25 @@ def add_activity_to_trip(request):
             {'error': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
+@login_required
+def trip_map_view(request, trip_id):
+    """
+    Display the map view for a specific trip showing all its activities.
+    """
+    try:
+        trip = Trip.objects.get(id=trip_id, user=request.user)
+        trip_activities = TripActivity.objects.filter(trip=trip).select_related('activity').order_by('order', 'added_at')
+
+        return render(request, 'trip_map.html', {
+            'trip': trip,
+            'trip_activities': trip_activities,
+            'google_api_key': settings.GOOGLE_MAPS_API_KEY
+        })
+    except Trip.DoesNotExist:
+        messages.error(request, 'Trip not found.')
+        return redirect('saved')
 
 
 @api_view(['DELETE'])

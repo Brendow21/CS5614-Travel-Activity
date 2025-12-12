@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .map-page-container {
+        display: flex;
+        height: calc(100vh - 70px);
+        width: 100%;
+    }
+
+    .trip-info-sidebar {
+        width: 280px;
+        background: white;
+        border-right: 1px solid #ddd;
+        overflow-y: auto;
+        padding: 20px;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+
+    .activities-sidebar {
+        width: 380px;
+        background: white;
+        border-left: 1px solid #ddd;
+        overflow-y: auto;
+        padding: 20px;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+    }
+
+    .trip-header {
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #0073b1;
+    }
+
+    .trip-header h1 {
+        font-size: 24px;
+        color: #0073b1;
+        margin: 0 0 10px 0;
+    }
+
+    .trip-dates {
+        color: #666;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .activities-list {
+        margin-top: 20px;
+    }
+
+    .activities-list h2 {
+        font-size: 18px;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .activity-item {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 12px;
+        border-left: 4px solid #0073b1;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .activity-item:hover {
+        background: #e9ecef;
+        transform: translateX(5px);
+    }
+
+    .activity-number {
+        display: inline-block;
+        background: #0073b1;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 24px;
+        font-size: 12px;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+    .activity-name {
+        font-weight: 600;
+        color: #333;
+        font-size: 15px;
+        margin-bottom: 5px;
+    }
+
+    .activity-address {
+        font-size: 13px;
+        color: #666;
+        margin-left: 34px;
+    }
+
+    .map-container {
+        flex: 1;
+        position: relative;
+    }
+
+    #map {
+        width: 100%;
+        height: 100%;
+    }
+
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #0073b1;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 14px;
+        margin-bottom: 20px;
+        transition: background 0.2s;
+    }
+
+    .back-button:hover {
+        background: #005a8a;
+    }
+
+    .no-activities {
+        text-align: center;
+        color: #999;
+        padding: 40px 20px;
+        font-size: 14px;
+    }
+
+    .activity-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 15px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .activity-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .card-image {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        background: #f0f0f0;
+    }
+
+    .placeholder-image {
+        width: 100%;
+        height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-size: 48px;
+    }
+
+    .card-content {
+        padding: 15px;
+    }
+
+    .card-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 0 8px 0;
+        color: #333;
+    }
+
+    .card-location {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .card-meta {
+        display: flex;
+        gap: 10px;
+        font-size: 13px;
+        color: #666;
+        flex-wrap: wrap;
+    }
+
+    .card-meta span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+</style>
+
+<div class="map-page-container">
+    <div class="trip-info-sidebar">
+        <a href="{% url 'saved' %}" class="back-button">
+            ← Back to Trips
+        </a>
+
+        <div class="trip-header">
+            <h1>{{ trip.destination }}</h1>
+            <div class="trip-dates">
+                📅 {{ trip.start_date|date:"M d, Y" }} - {{ trip.end_date|date:"M d, Y" }}
+            </div>
+        </div>
+
+        <div class="activities-list">
+            <h2>Itinerary ({{ trip_activities.count }} stops)</h2>
+            {% if trip_activities %}
+                {% for trip_activity in trip_activities %}
+                    <div class="activity-item"
+                         data-lat="{{ trip_activity.activity.latitude }}"
+                         data-lng="{{ trip_activity.activity.longitude }}"
+                         data-name="{{ trip_activity.activity.title }}"
+                         data-index="{{ forloop.counter }}">
+                        <div class="activity-name">
+                            <span class="activity-number">{{ forloop.counter }}</span>
+                            {{ trip_activity.activity.title }}
+                        </div>
+                        <div class="activity-address">
+                            📍 {{ trip_activity.activity.location }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-activities">
+                    No activities added yet
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
+
+    <div class="activities-sidebar">
+        <h2>Activity Details</h2>
+        {% if trip_activities %}
+            {% for trip_activity in trip_activities %}
+                <div class="activity-card">
+                    {% if trip_activity.activity.photo_url %}
+                        <img src="{{ trip_activity.activity.photo_url }}" class="card-image" alt="{{ trip_activity.activity.title }}">
+                    {% else %}
+                        <div class="placeholder-image">📍</div>
+                    {% endif %}
+                    <div class="card-content">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <span class="activity-number">{{ forloop.counter }}</span>
+                            <h3 class="card-title">{{ trip_activity.activity.title }}</h3>
+                        </div>
+                        <p class="card-location">📍 {{ trip_activity.activity.location }}</p>
+                        <div class="card-meta">
+                            {% if trip_activity.activity.rating %}
+                            <span>⭐ {{ trip_activity.activity.rating }}</span>
+                            {% endif %}
+                            {% if trip_activity.activity.duration %}
+                            <span>🕐 {{ trip_activity.activity.duration }} min</span>
+                            {% endif %}
+                        </div>
+                        {% if trip_activity.notes %}
+                        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; font-size: 13px; color: #666;">
+                            <strong>Notes:</strong> {{ trip_activity.notes }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-activities">
+                No activities to display
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+let map;
+let markers = [];
+let infoWindow;
+
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 0, lng: 0 },
+        zoom: 2
+    });
+
+    infoWindow = new google.maps.InfoWindow();
+
+    const activities = document.querySelectorAll('.activity-item');
+
+    if (activities.length > 0) {
+        const bounds = new google.maps.LatLngBounds();
+        const path = [];
+
+        activities.forEach((activity, index) => {
+            const lat = parseFloat(activity.dataset.lat);
+            const lng = parseFloat(activity.dataset.lng);
+            const name = activity.dataset.name;
+            const position = { lat, lng };
+
+            bounds.extend(position);
+            path.push(position);
+
+            const marker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: name,
+                label: {
+                    text: String(index + 1),
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                },
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 20,
+                    fillColor: '#0073b1',
+                    fillOpacity: 1,
+                    strokeColor: '#ffffff',
+                    strokeWeight: 2
+                }
+            });
+
+            marker.addListener('click', () => {
+                infoWindow.setContent(`<div style="padding: 10px;"><strong>${name}</strong></div>`);
+                infoWindow.open(map, marker);
+            });
+
+            markers.push(marker);
+
+            activity.addEventListener('click', () => {
+                map.setCenter(position);
+                map.setZoom(15);
+                infoWindow.setContent(`<div style="padding: 10px;"><strong>${name}</strong></div>`);
+                infoWindow.open(map, marker);
+            });
+        });
+
+        if (path.length > 1) {
+            new google.maps.Polyline({
+                path: path,
+                geodesic: true,
+                strokeColor: '#0073b1',
+                strokeOpacity: 0.6,
+                strokeWeight: 3,
+                map: map
+            });
+        }
+
+        map.fitBounds(bounds);
+
+        if (activities.length === 1) {
+            google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
+                map.setZoom(14);
+            });
+        }
+    }
+}
+
+function loadGoogleMaps() {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&callback=initMap`;
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+}
+
+loadGoogleMaps();
+</script>
+
+{% endblock %}

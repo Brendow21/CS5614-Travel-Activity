@@ -137,7 +137,7 @@ html, body {
     padding: 30px;
     background: #f8f9fa;
     max-height: 1000px;
-    overflow: hidden;
+    overflow-y: auto;
     transition: all 0.5s ease;
 }
 
@@ -360,6 +360,16 @@ html, body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+}
+
+.map-btn {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    color: white;
+}
+
+.map-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
 }
 
 .search-btn {

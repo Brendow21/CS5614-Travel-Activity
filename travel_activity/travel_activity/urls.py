@@ -40,13 +40,15 @@ urlpatterns = [
     path('search/', views.search_view, name='search_view'),
     path('profile/', views.profile_view, name='profile'),
     path('saved/', views.saved_view, name='saved'),
+    path('trips/<int:trip_id>/map/', views.trip_map_view, name='trip-map'),
 
     # Auth routes
     path('login/', auth_views.LoginView.as_view(template_name='account/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='account/logout.html'), name='logout'),
     path('register/', views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
-    
+    path('password-change/', auth_views.PasswordChangeView.as_view(template_name='account/password_change.html', success_url='/profile/'), name='password_change'),
+
     # API routes
     path('api/', include(router.urls)),
     path('api/recommendations/generate/', generate_recommendations, name='generate-recommendations'),

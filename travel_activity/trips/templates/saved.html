@@ -108,6 +108,9 @@
 
                 <!-- Trip Actions -->
                 <div class="trip-actions collapsed" id="actions-{{ trip_data.trip.id }}">
+                    <button class="action-btn map-btn" onclick="window.location.href='{% url 'trip-map' trip_data.trip.id %}'">
+                        🗺️ View Map
+                    </button>
                     <button class="action-btn search-btn" onclick="window.location.href='{% url 'search' %}'">
                         + Add More Activities
                     </button>

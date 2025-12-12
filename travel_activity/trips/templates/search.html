@@ -84,7 +84,6 @@
                             {% if activity.address %}<p class="address">{{ activity.address }}</p>{% endif %}
                             {% if activity.rating %}<p class="rating">⭐ {{ activity.rating }} ({% if activity.user_ratings_total %}{{ activity.user_ratings_total }} reviews{% else %}0 reviews{% endif %})</p>{% endif %}
                             {% if activity.types %}<p class="types">Type: {{ activity.types|join:", " }}</p>{% endif %}
-                            {% if activity.price_level %}<p class="price">Price Level: {{ activity.price_level }}</p>{% endif %}
                         </div>
                     </div>
                 {% endfor %}
@@ -127,13 +126,42 @@
 <script>
 let map;
 let marker;
+let allMarkers = [];
 
-// Initialize Google Map
 function initMap() {
     map = new google.maps.Map(document.getElementById('map-container'), {
         center: { lat: 0, lng: 0 },
         zoom: 2
     });
+
+    const items = document.querySelectorAll('.activity-item');
+    if (items.length > 0) {
+        const bounds = new google.maps.LatLngBounds();
+
+        items.forEach(item => {
+            const lat = parseFloat(item.dataset.lat);
+            const lng = parseFloat(item.dataset.lng);
+            const name = item.dataset.name;
+
+            bounds.extend({ lat, lng });
+
+            const marker = new google.maps.Marker({
+                position: { lat, lng },
+                map: map,
+                title: name
+            });
+
+            allMarkers.push({ marker: marker, item: item });
+        });
+
+        map.fitBounds(bounds);
+
+        if (items.length === 1) {
+            google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
+                map.setZoom(Math.min(14, map.getZoom()));
+            });
+        }
+    }
 
     document.querySelectorAll('.activity-item').forEach(item => {
         item.addEventListener('click', () => {
@@ -158,12 +186,16 @@ function initMap() {
             infoWindow.open(map, marker);
         });
     });
+
+    const searchInput = document.getElementById('search-query');
+    const autocomplete = new google.maps.places.Autocomplete(searchInput, {
+        types: ['geocode', 'establishment']
+    });
 }
 
-// Load Google Maps API
 function loadGoogleMaps() {
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&callback=initMap`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key={{ google_api_key }}&libraries=places&callback=initMap`;
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
@@ -201,15 +233,21 @@ function applyFilters() {
     cards.forEach(card => {
         const price = card.querySelector('.price') ? card.querySelector('.price').textContent.replace('Price Level: ','') : '';
         const category = card.querySelector('.types') ? card.querySelector('.types').textContent.replace('Type: ','').toLowerCase().split(', ') : [];
-        const rating = card.querySelector('.rating') 
-            ? parseFloat(card.querySelector('.rating').textContent.match(/⭐\s*([\d.]+)/)[1]) 
+        const rating = card.querySelector('.rating')
+            ? parseFloat(card.querySelector('.rating').textContent.match(/⭐\s*([\d.]+)/)[1])
             : 0;
 
         const priceMatch = selectedFilters.price.size === 0 || selectedFilters.price.has(price);
         const categoryMatch = selectedFilters.category.size === 0 || Array.from(selectedFilters.category).some(cat => category.includes(cat));
         const ratingMatch = selectedFilters.rating.size === 0 || Array.from(selectedFilters.rating).some(r => rating >= parseFloat(r));
 
-        card.style.display = (priceMatch && categoryMatch && ratingMatch) ? '' : 'none';
+        const isVisible = priceMatch && categoryMatch && ratingMatch;
+        card.style.display = isVisible ? '' : 'none';
+
+        const markerObj = allMarkers.find(m => m.item === card);
+        if (markerObj) {
+            markerObj.marker.setVisible(isVisible);
+        }
     });
 }
 

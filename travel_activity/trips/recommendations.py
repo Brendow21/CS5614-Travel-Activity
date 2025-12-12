@@ -1,5 +1,6 @@
 from django.db.models import Q, Avg
-from .models import Activity, Review, User
+from .models import Activity, Review, User, Trip, TripActivity
+from math import radians, sin, cos, sqrt, atan2
 
 class RecommendationEngine:
     """Generate personalized activity recommendations"""
@@ -79,3 +80,76 @@ class RecommendationEngine:
             score += 5
         
         return min(score, 100)
+
+    @staticmethod
+    def haversine_distance(lat1, lon1, lat2, lon2):
+        """Calculate distance between two points in kilometers"""
+        R = 6371
+
+        lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
+        dlat = lat2 - lat1
+        dlon = lon2 - lon1
+
+        a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+        c = 2 * atan2(sqrt(a), sqrt(1-a))
+
+        return R * c
+
+    @staticmethod
+    def generate_trip_recommendations(trip, user, limit=10):
+        """
+        Generate recommendations for activities to add to a specific trip.
+
+        Scoring based on:
+        - User preferences (40%)
+        - Location proximity (30%)
+        - Activity rating (20%)
+        - Category diversity (10%)
+        """
+        existing_activities = TripActivity.objects.filter(trip=trip).values_list('activity_id', flat=True)
+        existing_categories = TripActivity.objects.filter(trip=trip).values_list('activity__category', flat=True)
+
+        avg_lat = TripActivity.objects.filter(trip=trip).aggregate(Avg('activity__latitude'))['activity__latitude__avg']
+        avg_lng = TripActivity.objects.filter(trip=trip).aggregate(Avg('activity__longitude'))['activity__longitude__avg']
+
+        if not avg_lat or not avg_lng:
+            avg_lat, avg_lng = 0, 0
+
+        all_activities = Activity.objects.exclude(activity_id__in=existing_activities).exclude(latitude__isnull=True).exclude(longitude__isnull=True)
+
+        scored_activities = []
+        user_prefs = user.preferences if isinstance(user.preferences, list) else []
+
+        for activity in all_activities:
+            score = 0.0
+
+            pref_score = 40 if any(pref.lower() in activity.category.lower() for pref in user_prefs) else 0
+
+            distance = RecommendationEngine.haversine_distance(
+                float(avg_lat), float(avg_lng),
+                float(activity.latitude), float(activity.longitude)
+            )
+            if distance < 5:
+                proximity_score = 30
+            elif distance < 15:
+                proximity_score = 20
+            elif distance < 30:
+                proximity_score = 10
+            else:
+                proximity_score = 0
+
+            rating_score = (float(activity.rating or 0) / 5.0) * 20
+
+            diversity_score = 10 if activity.category not in existing_categories else 0
+
+            total_score = pref_score + proximity_score + rating_score + diversity_score
+
+            scored_activities.append({
+                'activity': activity,
+                'score': total_score,
+                'distance_km': round(distance, 1)
+            })
+
+        scored_activities.sort(key=lambda x: x['score'], reverse=True)
+
+        return scored_activities[:limit]

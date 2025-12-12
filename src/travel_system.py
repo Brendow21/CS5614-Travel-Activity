@@ -387,10 +387,14 @@ class RealTimeTravelActivitySystem:
         
         # Sort
         if sort_by == "rating":
-            unique_activities.sort(
-                key=lambda x: (x.rating or 0, x.user_ratings_total or 0),
-                reverse=True
-            )
+            def bayesian_rating(activity):
+                rating = activity.rating or 0
+                reviews = activity.user_ratings_total or 0
+                avg_rating = 3.5
+                min_reviews = 10
+                return (reviews * rating + min_reviews * avg_rating) / (reviews + min_reviews)
+
+            unique_activities.sort(key=bayesian_rating, reverse=True)
         elif sort_by == "distance":
             unique_activities.sort(key=lambda x: x.distance or float('inf'))
         elif sort_by == "reviews":

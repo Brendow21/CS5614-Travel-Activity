@@ -68,11 +68,8 @@
                 <a href="#" class="settings-link" onclick="toggleEditMode()">
                     <span>✏️</span> Edit Profile
                 </a>
-                <a href="#" class="settings-link">
+                <a href="{% url 'password_change' %}" class="settings-link">
                     <span>🔒</span> Change Password
-                </a>
-                <a href="#" class="settings-link">
-                    <span>⚙️</span> Account Settings
                 </a>
                 <form method="POST" action="{% url 'logout' %}" class="logout-form">
                     {% csrf_token %}
