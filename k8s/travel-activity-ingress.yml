@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: travel-activity-ingress
+  namespace: wanderly
+spec:
+  rules:
+    - host: travel-activity.endeavour.cs.vt.edu
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: travel-activity-service
+                port:
+                  number: 80
